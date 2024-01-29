@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
+import 'package:convert/convert.dart';
 
 void main() {
   runApp(const MyApp());
@@ -56,16 +58,35 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  DiscoveredDevice? device;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+  void _incrementCounter() async {
+    final flutterReactiveBle = FlutterReactiveBle();
+    final stream = flutterReactiveBle.scanForDevices(withServices: [], scanMode: ScanMode.lowLatency).listen((device) {
+      if (device.name == 'HMSoft') {
+        this.device = device;
+        print(device);
+        // flutterReactiveBle
+      }
     });
+    await Future.delayed(Duration(seconds: 2));
+    stream.cancel();
+    final stream2 = flutterReactiveBle.connectToDevice(id: device!.id, connectionTimeout: Duration(seconds: 5)).listen(
+      (event) {
+        print(event);
+      },
+      onError: (error) {
+        print(error);
+      },
+    );
+
+    await Future.delayed(Duration(seconds: 10));
+    final d = await flutterReactiveBle.writeCharacteristicWithoutResponse(
+        QualifiedCharacteristic(
+            characteristicId: Uuid.parse('0000ffe1-0000-1000-8000-00805f9b34fb'),
+            serviceId: device!.serviceUuids.first,
+            deviceId: device!.id),
+        value: [0x64, 0x61, 0x73, 0x64, 0x66, 0x31]);
   }
 
   @override
@@ -105,12 +126,19 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            TextField(
+              onSubmitted: (value) {
+                print('______');
+                print(value);
+                FlutterReactiveBle().writeCharacteristicWithoutResponse(
+                  QualifiedCharacteristic(
+                    characteristicId: Uuid.parse('0000ffe1-0000-1000-8000-00805f9b34fb'),
+                    serviceId: device!.serviceUuids.first,
+                    deviceId: device!.id,
+                  ),
+                  value: stringToBytes(value),
+                );
+              },
             ),
           ],
         ),
@@ -122,4 +150,15 @@ class _MyHomePageState extends State<MyHomePage> {
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+}
+
+List<int> stringToBytes(String input) {
+  List<int> bytes = [];
+
+  for (int i = 0; i < input.length; i++) {
+    int byte = input.codeUnitAt(i);
+    bytes.add(byte);
+  }
+
+  return bytes;
 }
