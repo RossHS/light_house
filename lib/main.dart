@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
-import 'package:convert/convert.dart';
+import 'package:light_house/utils.dart';
 
 void main() {
   runApp(const MyApp());
@@ -57,37 +57,40 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
   DiscoveredDevice? device;
 
-  void _incrementCounter() async {
-    final flutterReactiveBle = FlutterReactiveBle();
-    final stream = flutterReactiveBle.scanForDevices(withServices: [], scanMode: ScanMode.lowLatency).listen((device) {
-      if (device.name == 'HMSoft') {
-        this.device = device;
-        print(device);
-        // flutterReactiveBle
-      }
-    });
-    await Future.delayed(Duration(seconds: 2));
-    stream.cancel();
-    final stream2 = flutterReactiveBle.connectToDevice(id: device!.id, connectionTimeout: Duration(seconds: 5)).listen(
-      (event) {
-        print(event);
-      },
-      onError: (error) {
-        print(error);
-      },
-    );
+  String _red = '00';
+  String _green = '00';
+  String _blue = '00';
 
-    await Future.delayed(Duration(seconds: 10));
-    final d = await flutterReactiveBle.writeCharacteristicWithoutResponse(
-        QualifiedCharacteristic(
-            characteristicId: Uuid.parse('0000ffe1-0000-1000-8000-00805f9b34fb'),
-            serviceId: device!.serviceUuids.first,
-            deviceId: device!.id),
-        value: [0x64, 0x61, 0x73, 0x64, 0x66, 0x31]);
-  }
+  // void _incrementCounter() async {
+  //   final flutterReactiveBle = FlutterReactiveBle();
+  //   final stream = flutterReactiveBle.scanForDevices(withServices: [], scanMode: ScanMode.lowLatency).listen((device) {
+  //     if (device.name == 'HMSoft') {
+  //       this.device = device;
+  //       print(device);
+  //       // flutterReactiveBle
+  //     }
+  //   });
+  //   await Future.delayed(Duration(seconds: 2));
+  //   stream.cancel();
+  //   final stream2 = flutterReactiveBle.connectToDevice(id: device!.id, connectionTimeout: Duration(seconds: 5)).listen(
+  //     (event) {
+  //       print(event);
+  //     },
+  //     onError: (error) {
+  //       print(error);
+  //     },
+  //   );
+  //
+  //   await Future.delayed(Duration(seconds: 10));
+  //   final d = await flutterReactiveBle.writeCharacteristicWithoutResponse(
+  //       QualifiedCharacteristic(
+  //           characteristicId: Uuid.parse('0000ffe1-0000-1000-8000-00805f9b34fb'),
+  //           serviceId: device!.serviceUuids.first,
+  //           deviceId: device!.id),
+  //       value: [0x64, 0x61, 0x73, 0x64, 0x66, 0x31]);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -110,44 +113,67 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextField(
-              onSubmitted: (value) {
-                print('______');
-                print(value);
-                FlutterReactiveBle().writeCharacteristicWithoutResponse(
-                  QualifiedCharacteristic(
-                    characteristicId: Uuid.parse('0000ffe1-0000-1000-8000-00805f9b34fb'),
-                    serviceId: device!.serviceUuids.first,
-                    deviceId: device!.id,
-                  ),
-                  value: stringToBytes(value),
-                );
-              },
-            ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            // Column is also a layout widget. It takes a list of children and
+            // arranges them vertically. By default, it sizes itself to fit its
+            // children horizontally, and tries to be as tall as its parent.
+            //
+            // Column has various properties to control how it sizes itself and
+            // how it positions its children. Here we use mainAxisAlignment to
+            // center the children vertically; the main axis here is the vertical
+            // axis because Columns are vertical (the cross axis would be
+            // horizontal).
+            //
+            // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
+            // action in the IDE, or press "p" in the console), to see the
+            // wireframe for each widget.
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const SizedBox(height: 12),
+              Text('$_red$_green$_blue x${calcHashSum('$_red$_green$_blue').toRadixString(16).padLeft(2, '0')}'),
+              const SizedBox(height: 12),
+              Slider(
+                activeColor: Colors.red,
+                value: int.parse(_red, radix: 16).toDouble(),
+                min: 0,
+                max: 255,
+                onChanged: (value) {
+                  setState(() {
+                    _red = value.toInt().toRadixString(16).padLeft(2, '0');
+                    _writeData('$_red$_green$_blue');
+                  });
+                },
+              ),
+              Slider(
+                activeColor: Colors.green,
+                value: int.parse(_green, radix: 16).toDouble(),
+                min: 0,
+                max: 255,
+                onChanged: (value) {
+                  setState(() {
+                    _green = value.toInt().toRadixString(16).padLeft(2, '0');
+                    _writeData('$_red$_green$_blue');
+                  });
+                },
+              ),
+              Slider(
+                activeColor: Colors.blue,
+                value: int.parse(_blue, radix: 16).toDouble(),
+                min: 0,
+                max: 255,
+                onChanged: (value) {
+                  setState(() {
+                    _blue = value.toInt().toRadixString(16).padLeft(2, '0');
+                    _writeData('$_red$_green$_blue');
+                  });
+                },
+              ),
+            ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
@@ -161,4 +187,20 @@ List<int> stringToBytes(String input) {
   }
 
   return bytes;
+}
+
+/// Структура уходящего пакета
+/// # - начало строки
+/// [data] - полезная нагрузка
+/// x%hash_sum% - контрольная сумма пакета, отправляется в виде байта
+/// $ - символ окончания строки
+void _writeData(String data) {
+  FlutterReactiveBle().writeCharacteristicWithoutResponse(
+    QualifiedCharacteristic(
+      characteristicId: Uuid.parse('0000ffe1-0000-1000-8000-00805f9b34fb'),
+      serviceId: Uuid.parse('0000ffe0-0000-1000-8000-00805f9b34fb'),
+      deviceId: 'F0:C7:7F:B0:9C:BE',
+    ),
+    value: stringToBytes('#${data}x${calcHashSum(data).toRadixString(16).padLeft(2, '0')}\$'),
+  );
 }
