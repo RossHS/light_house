@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
-import 'package:light_house/utils.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:get_it/get_it.dart';
+import 'package:light_house/controllers/brightness_controller.dart';
+import 'package:light_house/controllers/rgb_controller.dart';
+import 'package:light_house/controllers/send_data_controller.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  _diRegisters();
   runApp(const MyApp());
 }
 
@@ -57,41 +62,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  DiscoveredDevice? device;
-
-  int _red = 0;
-  int _green = 0;
-  int _blue = 0;
-
-  // void _incrementCounter() async {
-  //   final flutterReactiveBle = FlutterReactiveBle();
-  //   final stream = flutterReactiveBle.scanForDevices(withServices: [], scanMode: ScanMode.lowLatency).listen((device) {
-  //     if (device.name == 'HMSoft') {
-  //       this.device = device;
-  //       print(device);
-  //       // flutterReactiveBle
-  //     }
-  //   });
-  //   await Future.delayed(Duration(seconds: 2));
-  //   stream.cancel();
-  //   final stream2 = flutterReactiveBle.connectToDevice(id: device!.id, connectionTimeout: Duration(seconds: 5)).listen(
-  //     (event) {
-  //       print(event);
-  //     },
-  //     onError: (error) {
-  //       print(error);
-  //     },
-  //   );
-  //
-  //   await Future.delayed(Duration(seconds: 10));
-  //   final d = await flutterReactiveBle.writeCharacteristicWithoutResponse(
-  //       QualifiedCharacteristic(
-  //           characteristicId: Uuid.parse('0000ffe1-0000-1000-8000-00805f9b34fb'),
-  //           serviceId: device!.serviceUuids.first,
-  //           deviceId: device!.id),
-  //       value: [0x64, 0x61, 0x73, 0x64, 0x66, 0x31]);
-  // }
-
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -115,62 +85,94 @@ class _MyHomePageState extends State<MyHomePage> {
         // in the middle of the parent.
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            // Column is also a layout widget. It takes a list of children and
-            // arranges them vertically. By default, it sizes itself to fit its
-            // children horizontally, and tries to be as tall as its parent.
-            //
-            // Column has various properties to control how it sizes itself and
-            // how it positions its children. Here we use mainAxisAlignment to
-            // center the children vertically; the main axis here is the vertical
-            // axis because Columns are vertical (the cross axis would be
-            // horizontal).
-            //
-            // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-            // action in the IDE, or press "p" in the console), to see the
-            // wireframe for each widget.
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const SizedBox(height: 12),
-              Text('0x$_red, 0x$_green, 0x$_blue; hash -0x${calcHashSum([_red, _green, _blue]).toRadixString(16)}'),
-              const SizedBox(height: 12),
-              Slider(
-                activeColor: Colors.red,
-                value: _red.toDouble(),
-                min: 0,
-                max: 255,
-                onChanged: (value) {
-                  setState(() {
-                    _red = value.toInt();
-                    _writeData([_red, _green, _blue]);
-                  });
-                },
-              ),
-              // Slider(
-              //   activeColor: Colors.green,
-              //   value: int.parse(_green, radix: 16).toDouble(),
-              //   min: 0,
-              //   max: 255,
-              //   onChanged: (value) {
-              //     setState(() {
-              //       _green = value.toInt().toRadixString(16).padLeft(2, '0');
-              //       _writeData('$_red$_green$_blue');
-              //     });
-              //   },
-              // ),
-              // Slider(
-              //   activeColor: Colors.blue,
-              //   value: int.parse(_blue, radix: 16).toDouble(),
-              //   min: 0,
-              //   max: 255,
-              //   onChanged: (value) {
-              //     setState(() {
-              //       _blue = value.toInt().toRadixString(16).padLeft(2, '0');
-              //       _writeData('$_red$_green$_blue');
-              //     });
-              //   },
-              // ),
-            ],
+          child: Observer(
+            builder: (context) {
+              final rgbController = GetIt.I<RGBController>();
+              final brightnessController = GetIt.I<BrightnessController>();
+              return Column(
+                // Column is also a layout widget. It takes a list of children and
+                // arranges them vertically. By default, it sizes itself to fit its
+                // children horizontally, and tries to be as tall as its parent.
+                //
+                // Column has various properties to control how it sizes itself and
+                // how it positions its children. Here we use mainAxisAlignment to
+                // center the children vertically; the main axis here is the vertical
+                // axis because Columns are vertical (the cross axis would be
+                // horizontal).
+                //
+                // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
+                // action in the IDE, or press "p" in the console), to see the
+                // wireframe for each widget.
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  const SizedBox(height: 12),
+                  // Text('0x$_red, 0x$_green, 0x$_blue; hash -0x${calcHashSum([_red, _green, _blue]).toRadixString(16)}'),
+                  const SizedBox(height: 12),
+                  Slider(
+                    activeColor: Colors.red,
+                    value: rgbController.red.toDouble(),
+                    min: 0,
+                    max: 255,
+                    onChanged: (value) {
+                      rgbController.red = value.toInt();
+                    },
+                  ),
+                  Slider(
+                    activeColor: Colors.green,
+                    value: rgbController.green.toDouble(),
+                    min: 0,
+                    max: 255,
+                    onChanged: (value) {
+                      rgbController.green = value.toInt();
+                    },
+                  ),
+                  Slider(
+                    activeColor: Colors.blue,
+                    value: rgbController.blue.toDouble(),
+                    min: 0,
+                    max: 255,
+                    onChanged: (value) {
+                      rgbController.blue = value.toInt();
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  const Text('Яркость'),
+                  Slider(
+                    activeColor: Colors.yellow,
+                    value: brightnessController.brightness.toDouble(),
+                    min: 0,
+                    max: 255,
+                    onChanged: (value) {
+                      brightnessController.brightness = value.toInt();
+                    },
+                  ),
+                  // Slider(
+                  //   activeColor: Colors.green,
+                  //   value: int.parse(_green, radix: 16).toDouble(),
+                  //   min: 0,
+                  //   max: 255,
+                  //   onChanged: (value) {
+                  //     setState(() {
+                  //       _green = value.toInt().toRadixString(16).padLeft(2, '0');
+                  //       _writeData('$_red$_green$_blue');
+                  //     });
+                  //   },
+                  // ),
+                  // Slider(
+                  //   activeColor: Colors.blue,
+                  //   value: int.parse(_blue, radix: 16).toDouble(),
+                  //   min: 0,
+                  //   max: 255,
+                  //   onChanged: (value) {
+                  //     setState(() {
+                  //       _blue = value.toInt().toRadixString(16).padLeft(2, '0');
+                  //       _writeData('$_red$_green$_blue');
+                  //     });
+                  //   },
+                  // ),
+                ],
+              );
+            },
           ),
         ),
       ),
@@ -178,30 +180,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-/// Структура уходящего пакета
-/// # (значение 35 (0x23)) - начало строки
-/// [data] - полезная нагрузка
-/// %hash_sum% - контрольная сумма пакета, отправляется в виде байта
-/// % (значение 37 (0xABCE)) - символ окончания строки
-void _writeData(List<int> data) {
-  print([
-    0x23, // начало пакета
-    ...data,
-    calcHashSum(data),
-    0x25, // конец пакета
-  ]);
-  FlutterReactiveBle().writeCharacteristicWithoutResponse(
-    QualifiedCharacteristic(
-      characteristicId: Uuid.parse('0000ffe1-0000-1000-8000-00805f9b34fb'),
-      serviceId: Uuid.parse('0000ffe0-0000-1000-8000-00805f9b34fb'),
-      deviceId: 'F0:C7:7F:B0:9C:BE',
-    ),
-    value: [
-      0x23, // начало пакета
-      ...data,
-      calcHashSum(data),
-      0x25, // конец пакета
-    ],
-    // value: stringToBytes('#${data}x${calcHashSum(data).toRadixString(16).padLeft(2, '0')}\$'),
-  );
+/// Регистрация данных в сервис для контроллеров через GetIt
+void _diRegisters() {
+  GetIt.I.registerSingleton(SendDataController());
+  GetIt.I.registerSingleton(RGBController());
+  GetIt.I.registerSingleton(BrightnessController());
 }
