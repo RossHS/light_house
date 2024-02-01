@@ -59,9 +59,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   DiscoveredDevice? device;
 
-  String _red = '00';
-  String _green = '00';
-  String _blue = '00';
+  int _red = 0;
+  int _green = 0;
+  int _blue = 0;
 
   // void _incrementCounter() async {
   //   final flutterReactiveBle = FlutterReactiveBle();
@@ -132,44 +132,44 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               const SizedBox(height: 12),
-              Text('$_red$_green$_blue x${calcHashSum('$_red$_green$_blue').toRadixString(16).padLeft(2, '0')}'),
+              Text('0x$_red, 0x$_green, 0x$_blue; hash -0x${calcHashSum([_red, _green, _blue]).toRadixString(16)}'),
               const SizedBox(height: 12),
               Slider(
                 activeColor: Colors.red,
-                value: int.parse(_red, radix: 16).toDouble(),
+                value: _red.toDouble(),
                 min: 0,
                 max: 255,
                 onChanged: (value) {
                   setState(() {
-                    _red = value.toInt().toRadixString(16).padLeft(2, '0');
-                    _writeData('$_red$_green$_blue');
+                    _red = value.toInt();
+                    _writeData([_red, _green, _blue]);
                   });
                 },
               ),
-              Slider(
-                activeColor: Colors.green,
-                value: int.parse(_green, radix: 16).toDouble(),
-                min: 0,
-                max: 255,
-                onChanged: (value) {
-                  setState(() {
-                    _green = value.toInt().toRadixString(16).padLeft(2, '0');
-                    _writeData('$_red$_green$_blue');
-                  });
-                },
-              ),
-              Slider(
-                activeColor: Colors.blue,
-                value: int.parse(_blue, radix: 16).toDouble(),
-                min: 0,
-                max: 255,
-                onChanged: (value) {
-                  setState(() {
-                    _blue = value.toInt().toRadixString(16).padLeft(2, '0');
-                    _writeData('$_red$_green$_blue');
-                  });
-                },
-              ),
+              // Slider(
+              //   activeColor: Colors.green,
+              //   value: int.parse(_green, radix: 16).toDouble(),
+              //   min: 0,
+              //   max: 255,
+              //   onChanged: (value) {
+              //     setState(() {
+              //       _green = value.toInt().toRadixString(16).padLeft(2, '0');
+              //       _writeData('$_red$_green$_blue');
+              //     });
+              //   },
+              // ),
+              // Slider(
+              //   activeColor: Colors.blue,
+              //   value: int.parse(_blue, radix: 16).toDouble(),
+              //   min: 0,
+              //   max: 255,
+              //   onChanged: (value) {
+              //     setState(() {
+              //       _blue = value.toInt().toRadixString(16).padLeft(2, '0');
+              //       _writeData('$_red$_green$_blue');
+              //     });
+              //   },
+              // ),
             ],
           ),
         ),
@@ -178,29 +178,30 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-List<int> stringToBytes(String input) {
-  List<int> bytes = [];
-
-  for (int i = 0; i < input.length; i++) {
-    int byte = input.codeUnitAt(i);
-    bytes.add(byte);
-  }
-
-  return bytes;
-}
-
 /// Структура уходящего пакета
-/// # - начало строки
+/// # (значение 35 (0x23)) - начало строки
 /// [data] - полезная нагрузка
-/// x%hash_sum% - контрольная сумма пакета, отправляется в виде байта
-/// $ - символ окончания строки
-void _writeData(String data) {
+/// %hash_sum% - контрольная сумма пакета, отправляется в виде байта
+/// % (значение 37 (0xABCE)) - символ окончания строки
+void _writeData(List<int> data) {
+  print([
+    0x23, // начало пакета
+    ...data,
+    calcHashSum(data),
+    0x25, // конец пакета
+  ]);
   FlutterReactiveBle().writeCharacteristicWithoutResponse(
     QualifiedCharacteristic(
       characteristicId: Uuid.parse('0000ffe1-0000-1000-8000-00805f9b34fb'),
       serviceId: Uuid.parse('0000ffe0-0000-1000-8000-00805f9b34fb'),
       deviceId: 'F0:C7:7F:B0:9C:BE',
     ),
-    value: stringToBytes('#${data}x${calcHashSum(data).toRadixString(16).padLeft(2, '0')}\$'),
+    value: [
+      0x23, // начало пакета
+      ...data,
+      calcHashSum(data),
+      0x25, // конец пакета
+    ],
+    // value: stringToBytes('#${data}x${calcHashSum(data).toRadixString(16).padLeft(2, '0')}\$'),
   );
 }
