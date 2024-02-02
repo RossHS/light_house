@@ -10,7 +10,9 @@ part 'brightness_controller.g.dart';
 class BrightnessController = _BrightnessControllerBase with _$BrightnessController;
 
 /// Установка яркости по специальному формату микроконтроллера
-/// #bfe
+/// #b0f
+/// где b - это заголовок
+/// 0f - это яркость
 abstract class _BrightnessControllerBase with Store {
   _BrightnessControllerBase() {
     reaction(
