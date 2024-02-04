@@ -10,7 +10,7 @@
 GRGB led(COMMON_CATHODE, 3, 5, 6);
 
 // Переменные для алгоритмов свечения
-char lightMode = '0'; // Режим свечения выключен
+char lightMode = '0'; // Режим свечения выключен, 1 - плавное переключение яркости, 2 - перетекание света
 uint32_t tmr; // время
 
 
@@ -25,7 +25,7 @@ void setup() {
 
 void loop() {
   readSerialData();
-//  playLightMode();
+  playLightMode();
 }
 
 // Чтение входящих пакетов
@@ -55,10 +55,17 @@ void readSerialData() {
 
 // Определение светового режима 
 void playLightMode() {
-  if (lightMode == '1') return;
-  else if (lightMode == '0') switchingBrightnessLightMode();
+  switch(lightMode) {
+    case '1': 
+      switchingBrightnessLightMode();
+      break;
+    case '2':
+      switchingChangeColorLightMode();
+      break;
+  }
 }
 
+/// Плавное переключение яркости
 void switchingBrightnessLightMode() {
   static int val = 0;
   static bool dir = true; // направление алгоритма
@@ -68,6 +75,41 @@ void switchingBrightnessLightMode() {
     else val--;     // уменьшаем
     if (val >= 255 || val <= 0) dir = !dir; // разворачиваем
     led.setBrightness(val);
+  }
+}
+
+/// Плавное переключение цвета
+void switchingChangeColorLightMode() {
+  static byte currentR = 255, currentG = 0, currentB = 0;
+  static byte targetR = 0, targetG = 255, targetB = 0;
+  const byte fadeSpeed = 1;
+  
+  if (millis() - tmr >= 20) {
+    tmr = millis();
+    if (currentR != targetR) {
+      currentR += (targetR - currentR > 0) ? fadeSpeed : -fadeSpeed;
+    } else {
+      targetB = 0;
+      targetR = 0;
+      targetG = 255;
+    }
+
+    if (currentG != targetG) {
+      currentG += (targetG - currentG > 0) ? fadeSpeed : -fadeSpeed;
+    } else {
+      targetR = 0;
+      targetG = 0;
+      targetB = 255;
+    }
+
+    if (currentB != targetB) {
+      currentB += (targetB - currentB > 0) ? fadeSpeed : -fadeSpeed;
+    } else {
+      targetB = 0;
+      targetG = 0;
+      targetR = 255;
+    }
+    led.setRGB(currentR, currentG, currentB);
   }
 }
 
