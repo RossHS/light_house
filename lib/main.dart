@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
-import 'package:light_house/controllers/brightness_controller.dart';
-import 'package:light_house/controllers/play_mode_controller.dart';
-import 'package:light_house/controllers/rgb_controller.dart';
-import 'package:light_house/controllers/send_data_controller.dart';
-import 'package:light_house/models/play_mode_models.dart';
+import 'package:light_house/src/controllers/brightness_controller.dart';
+import 'package:light_house/src/controllers/play_mode_controller.dart';
+import 'package:light_house/src/controllers/rgb_controller.dart';
+import 'package:light_house/src/controllers/send_data_controller.dart';
+import 'package:light_house/src/models/play_mode_models.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

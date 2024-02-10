@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:light_house/utils/extension.dart';
+import 'package:light_house/src/utils/extension.dart';
 
 /// Базовый объект для режима проигрывания цветом
 @immutable
