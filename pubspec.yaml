@@ -2,7 +2,7 @@ name: light_house
 description: "Flutter BLE project"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.0+1
+version: 1.0.1+1
 
 environment:
   sdk: '>=3.2.0 <4.0.0'
@@ -13,6 +13,7 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.6
+  flutter_colorpicker: ^1.0.3
   flutter_mobx: ^2.2.0+2
   flutter_reactive_ble: ^5.3.0
   get_it: ^7.6.7

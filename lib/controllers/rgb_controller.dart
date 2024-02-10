@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:get_it/get_it.dart';
 import 'package:light_house/controllers/send_data_controller.dart';
 import 'package:light_house/models/data_headers.dart';
@@ -15,22 +17,18 @@ abstract class _RGBControllerBase with Store {
   _RGBControllerBase() {
     reaction(
       // Чисто для срабатывания реакции, чтобы при смене этих переменных летел новый запрос
-      (_) => red + green + blue,
+      (_) => color,
       (_) => sendColor(),
     );
   }
 
   @observable
-  int red = 0;
-  @observable
-  int green = 0;
-  @observable
-  int blue = 0;
+  Color color = const Color(0xFF000000);
 
   void sendColor() {
     GetIt.I<SendDataController>().writeData(
       DataHeader.c,
-      '${red.uint8HexFormat}${green.uint8HexFormat}${blue.uint8HexFormat}',
+      '${color.red.uint8HexFormat}${color.green.uint8HexFormat}${color.blue.uint8HexFormat}',
     );
   }
 }

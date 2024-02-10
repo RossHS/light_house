@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:light_house/controllers/brightness_controller.dart';
@@ -19,20 +20,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Light House',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -43,8 +41,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text('Home'),
       ),
       body: Center(
         child: Padding(
@@ -58,33 +56,37 @@ class _MyHomePageState extends State<MyHomePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   const SizedBox(height: 12),
-                  // Text('0x$_red, 0x$_green, 0x$_blue; hash -0x${calcHashSum([_red, _green, _blue]).toRadixString(16)}'),
-                  const SizedBox(height: 12),
                   Slider(
                     activeColor: Colors.red,
-                    value: rgbController.red.toDouble(),
+                    value: rgbController.color.red.toDouble(),
                     min: 0,
                     max: 255,
-                    onChanged: (value) {
-                      rgbController.red = value.toInt();
-                    },
+                    onChanged: (value) => rgbController.color = rgbController.color.withRed(value.toInt()),
                   ),
                   Slider(
                     activeColor: Colors.green,
-                    value: rgbController.green.toDouble(),
+                    value: rgbController.color.green.toDouble(),
                     min: 0,
                     max: 255,
-                    onChanged: (value) {
-                      rgbController.green = value.toInt();
-                    },
+                    onChanged: (value) => rgbController.color = rgbController.color.withGreen(value.toInt()),
                   ),
                   Slider(
                     activeColor: Colors.blue,
-                    value: rgbController.blue.toDouble(),
+                    value: rgbController.color.blue.toDouble(),
                     min: 0,
                     max: 255,
-                    onChanged: (value) {
-                      rgbController.blue = value.toInt();
+                    onChanged: (value) => rgbController.color = rgbController.color.withBlue(value.toInt()),
+                  ),
+                  const SizedBox(height: 12),
+                  ColorPicker(
+                    labelTypes: const [],
+                    enableAlpha: false,
+                    displayThumbColor: false,
+                    colorPickerWidth: 300,
+                    paletteType: PaletteType.hueWheel,
+                    pickerColor: rgbController.color,
+                    onColorChanged: (color) {
+                      rgbController.color = color;
                     },
                   ),
                   const SizedBox(height: 12),
