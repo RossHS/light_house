@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Light House',
       theme: ThemeData(
+        fontFamily: 'JetBrains Mono',
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
       ),
       home: const HomeScreen(),
