@@ -53,7 +53,7 @@ class GlassBox extends StatelessWidget {
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: glassColor.withOpacity(opacity),
-            border: Border(
+            border: const Border(
               top: BorderSide(
                 color: Colors.black,
                 width: 0.5,

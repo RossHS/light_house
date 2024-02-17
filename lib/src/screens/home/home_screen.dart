@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -25,10 +26,10 @@ class _HomeScreenState extends State<HomeScreen> {
           Center(
             child: RunningTextAnimation(
               text: '0\nx\nF\nF\n0\n0\nE\n1\n_',
-              textStyle: TextStyle(
+              textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
                 color: Colors.black,
-                fontSize: 19,
-                fontWeight: FontWeight.w700
+                fontSize: 20,
+                fontWeight: FontWeight.w100,
               ),
             ),
           ),
