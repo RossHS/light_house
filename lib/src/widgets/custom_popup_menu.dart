@@ -112,8 +112,8 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> with SingleTickerProv
               child: RepaintBoundary(
                 child: CustomPaint(
                   foregroundPainter: _CustomLinePainter(animation: _drawAnimation),
-                  child: FadeTransition(
-                    opacity: _opacityAnimation,
+                  child: ClipRect(
+                    clipper: _RectClipper(animation: _opacityAnimation),
                     child: Material(
                       color: Colors.white,
                       child: widget.menuBuilder(),
@@ -287,10 +287,10 @@ class _CustomLinePainter extends CustomPainter {
 
     // Добавляем разворот для линий
     if (currentPathLen >= size.width) {
-      rightPath.lineTo(size.width, (size.height - (currentPathLen-size.width)).clamp(0, size.height));
+      rightPath.lineTo(size.width, (size.height - (currentPathLen - size.width)).clamp(0, size.height));
     }
     if (currentPathLen >= size.height) {
-      topPath.lineTo((currentPathLen-size.height).clamp(0, size.width), 0);
+      topPath.lineTo((currentPathLen - size.height).clamp(0, size.width), 0);
     }
 
     canvas.drawPath(topPath, _border);
@@ -299,6 +299,23 @@ class _CustomLinePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_CustomLinePainter oldDelegate) {
+    return false;
+  }
+}
+
+/// Обрезка контент внутри [CustomPopupMenu]
+class _RectClipper extends CustomClipper<Rect> {
+  _RectClipper({required this.animation}) : super(reclip: animation);
+
+  final Animation<double> animation;
+
+  @override
+  Rect getClip(Size size) {
+    return Rect.fromLTRB(0, size.height*(1-animation.value), size.width, size.height);
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Rect> oldClipper) {
     return false;
   }
 }
