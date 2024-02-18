@@ -21,15 +21,13 @@ class CustomPopupMenuController extends ChangeNotifier {
   }
 }
 
-Rect _menuRect = Rect.zero;
-
 class CustomPopupMenu extends StatefulWidget {
   const CustomPopupMenu({
     super.key,
     required this.menuBuilder,
     this.controller,
     this.horizontalMargin = 10.0,
-    this.verticalMargin = 10.0,
+    this.verticalMargin = 20.0,
     this.menuOnChange,
     this.enablePassEvent = true,
     required this.child,
@@ -51,43 +49,75 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> with SingleTickerProv
   RenderBox? _childBox;
   RenderBox? _parentBox;
   OverlayEntry? _overlayEntry;
-  CustomPopupMenuController? _controller;
+  CustomPopupMenuController? _popupController;
   late AnimationController _animationController;
+  late Animation<double> _drawAnimation;
+  late Animation<double> _opacityAnimation;
+
+// Квадрат меню, по нему мы понимаем рамки нашего контента на экране
+  var _menuScreenRect = Rect.zero;
+
+  @override
+  void initState() {
+    super.initState();
+    _popupController = widget.controller ?? CustomPopupMenuController();
+    _popupController?.addListener(_updateView);
+    WidgetsBinding.instance.addPostFrameCallback((call) {
+      if (mounted) {
+        _childBox = context.findRenderObject() as RenderBox?;
+        _parentBox = Overlay.of(context).context.findRenderObject() as RenderBox?;
+      }
+    });
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
+
+    _drawAnimation = Tween(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: const Interval(0.0, 0.5)),
+    );
+    _opacityAnimation = Tween(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: const Interval(0.5, 1.0)),
+    );
+  }
+
+  @override
+  void dispose() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+    _popupController?.removeListener(_updateView);
+    _popupController?.dispose();
+    super.dispose();
+  }
 
   void _showMenu() {
     _overlayEntry = OverlayEntry(
       builder: (context) {
-        Widget menu = AnimatedBuilder(
-          animation: _animationController,
-          builder: (context, child) {
-            return Opacity(
-              opacity: _animationController.value,
-              child: child,
-            );
-          },
-          child: Center(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: _parentBox!.size.width - 2 * widget.horizontalMargin,
-                minWidth: 0,
-              ),
-              child: CustomSingleChildLayout(
-                delegate: _MenuLayoutDelegate(
-                  anchorSize: _childBox!.size,
-                  offset: _childBox!.localToGlobal(
-                    Offset(-widget.horizontalMargin, 0),
-                  ),
-                  verticalMargin: widget.verticalMargin,
+        Widget menu = Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: _parentBox!.size.width - 2 * widget.horizontalMargin,
+              minWidth: 0,
+            ),
+            child: CustomSingleChildLayout(
+              delegate: _MenuLayoutDelegate(
+                anchorSize: _childBox!.size,
+                offset: _childBox!.localToGlobal(
+                  Offset(-widget.horizontalMargin, 0),
                 ),
-                // TODO 17.02.2024 - подумать о стиле, мб будем брать из темы контекста?
-                child: Material(
-                  color: Colors.white,
-                  shape: Border.all(
-                    color: Colors.black,
-                    width: 0.5,
-                  ),
-                  child: RepaintBoundary(
-                    child: widget.menuBuilder(),
+                verticalMargin: widget.verticalMargin,
+                onScreenRectCalculated: (rect) => _menuScreenRect = rect,
+              ),
+              // TODO 17.02.2024 - подумать о стиле, мб будем брать из темы контекста?
+              child: RepaintBoundary(
+                child: CustomPaint(
+                  foregroundPainter: _CustomLinePainter(animation: _drawAnimation),
+                  child: FadeTransition(
+                    opacity: _opacityAnimation,
+                    child: Material(
+                      color: Colors.white,
+                      child: widget.menuBuilder(),
+                    ),
                   ),
                 ),
               ),
@@ -98,11 +128,11 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> with SingleTickerProv
           behavior: widget.enablePassEvent ? HitTestBehavior.translucent : HitTestBehavior.opaque,
           onPointerDown: (event) {
             Offset offset = event.localPosition;
-            // If tap position in menu
-            if (_menuRect.contains(Offset(offset.dx - widget.horizontalMargin, offset.dy))) {
+            // Если мы кликнули внутри бокса оверлея
+            if (_menuScreenRect.contains(Offset(offset.dx - widget.horizontalMargin, offset.dy))) {
               return;
             }
-            _controller?.hideMenu();
+            _popupController?.hideMenu();
           },
           child: menu,
         );
@@ -123,39 +153,13 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> with SingleTickerProv
   }
 
   void _updateView() {
-    bool menuIsShowing = _controller?.menuIsShowing ?? false;
+    bool menuIsShowing = _popupController?.menuIsShowing ?? false;
     widget.menuOnChange?.call(menuIsShowing);
     if (menuIsShowing) {
       _showMenu();
     } else {
       _hideMenu();
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = widget.controller ?? CustomPopupMenuController();
-    _controller?.addListener(_updateView);
-    WidgetsBinding.instance.addPostFrameCallback((call) {
-      if (mounted) {
-        _childBox = context.findRenderObject() as RenderBox?;
-        _parentBox = Overlay.of(context).context.findRenderObject() as RenderBox?;
-      }
-    });
-    _animationController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 500),
-    );
-  }
-
-  @override
-  void dispose() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
-    _controller?.removeListener(_updateView);
-    _controller?.dispose();
-    super.dispose();
   }
 
   @override
@@ -167,7 +171,7 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> with SingleTickerProv
         Navigator.of(context).pop();
       },
       child: GestureDetector(
-        onTap: () => _controller?.showMenu(),
+        onTap: () => _popupController?.showMenu(),
         child: widget.child,
       ),
     );
@@ -188,11 +192,13 @@ class _MenuLayoutDelegate extends SingleChildLayoutDelegate {
     required this.anchorSize,
     required this.offset,
     required this.verticalMargin,
+    required this.onScreenRectCalculated,
   });
 
   final Size anchorSize;
   final Offset offset;
   final double verticalMargin;
+  final Function(Rect rect) onScreenRectCalculated;
 
   @override
   Offset getPositionForChild(Size size, Size childSize) {
@@ -237,9 +243,62 @@ class _MenuLayoutDelegate extends SingleChildLayoutDelegate {
         ),
     };
 
+    // Отдаем размер бокса по обратному вызову
+    onScreenRectCalculated(
+      Rect.fromLTWH(
+        contentOffset.dx,
+        contentOffset.dy,
+        childSize.width,
+        childSize.height,
+      ),
+    );
     return Offset(contentOffset.dx, contentOffset.dy);
   }
 
   @override
   bool shouldRelayout(SingleChildLayoutDelegate oldDelegate) => false;
+}
+
+/// Отрисовка контура при появлении [CustomPopupMenu] на экране
+class _CustomLinePainter extends CustomPainter {
+  _CustomLinePainter({
+    required this.animation,
+  }) : super(repaint: animation);
+
+  final Animation<double> animation;
+  final _border = Paint()
+    ..color = Colors.black
+    ..strokeWidth = 0.5
+    ..style = PaintingStyle.stroke;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // Общая длина пути
+    final totalPathLen = size.height + size.width;
+    // Когда 0, анимация отключена, когда 1 - анимация завершена, значит мы прошли весь путь
+    final currentPathLen = totalPathLen * animation.value;
+    final rightPath = Path();
+    final topPath = Path();
+    rightPath.moveTo(0, size.height);
+    topPath.moveTo(0, size.height);
+    if (currentPathLen == 0) return;
+    rightPath.lineTo(currentPathLen.clamp(0, size.width), size.height);
+    topPath.lineTo(0, (size.height - currentPathLen).clamp(0, size.height));
+
+    // Добавляем разворот для линий
+    if (currentPathLen >= size.width) {
+      rightPath.lineTo(size.width, (size.height - (currentPathLen-size.width)).clamp(0, size.height));
+    }
+    if (currentPathLen >= size.height) {
+      topPath.lineTo((currentPathLen-size.height).clamp(0, size.width), 0);
+    }
+
+    canvas.drawPath(topPath, _border);
+    canvas.drawPath(rightPath, _border);
+  }
+
+  @override
+  bool shouldRepaint(_CustomLinePainter oldDelegate) {
+    return false;
+  }
 }
