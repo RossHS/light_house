@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:light_house/src/controllers/brightness_controller.dart';
-import 'package:light_house/src/controllers/play_mode_controller.dart';
-import 'package:light_house/src/controllers/rgb_controller.dart';
-import 'package:light_house/src/controllers/send_data_controller.dart';
+import 'package:light_house/src/controllers/core/brightness_controller.dart';
+import 'package:light_house/src/controllers/core/play_mode_controller.dart';
+import 'package:light_house/src/controllers/core/rgb_controller.dart';
+import 'package:light_house/src/controllers/core/send_data_controller.dart';
 import 'package:light_house/src/screens/home/home_screen.dart';
 
 void main() {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
-import 'package:light_house/src/controllers/rgb_controller.dart';
+import 'package:light_house/src/controllers/core/rgb_controller.dart';
 import 'package:light_house/src/screens/home/widgets/home_widgets.dart';
 import 'package:light_house/src/utils/extension.dart';
 import 'package:light_house/src/widgets/animated_text_background.dart';

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
-import 'package:light_house/src/controllers/brightness_controller.dart';
-import 'package:light_house/src/controllers/rgb_controller.dart';
+import 'package:light_house/src/controllers/core/brightness_controller.dart';
+import 'package:light_house/src/controllers/core/rgb_controller.dart';
 
 /// Колесо Hue для управления цветом лампы
 class LightHue extends StatelessWidget {

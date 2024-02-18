@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
-import 'package:light_house/src/controllers/brightness_controller.dart';
-import 'package:light_house/src/controllers/rgb_controller.dart';
+import 'package:light_house/src/controllers/core/brightness_controller.dart';
+import 'package:light_house/src/controllers/core/rgb_controller.dart';
 
 /// Контент оверлея управления цветом и яркостью через слайдеры
 class LightSliders extends StatelessWidget {
