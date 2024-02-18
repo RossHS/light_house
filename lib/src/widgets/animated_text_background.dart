@@ -43,7 +43,7 @@ class _RunningTextAnimationState extends State<RunningTextAnimation> with Single
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: RunningTextPainter(
-        text: widget.text,
+        text: widget.text.split('').join('\n'),
         textStyle: widget.textStyle,
         animation: _animation,
       ),

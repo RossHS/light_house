@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
-/// Кастомное меню, которое по сути является оверлеем [OverlayEntry]
+/// Кастомное меню, которое по сути является оверлеем [OverlayEntry],
+/// для управления всем этим следует пользоваться [CustomPopupMenuController],
+/// через него мы открываем оверлей и закрываем
 
+/// Контроллер управления [CustomPopupMenu]
 class CustomPopupMenuController extends ChangeNotifier {
   bool menuIsShowing = false;
 
@@ -28,7 +31,7 @@ class CustomPopupMenu extends StatefulWidget {
     this.controller,
     this.horizontalMargin = 10.0,
     this.verticalMargin = 20.0,
-    this.menuOnChange,
+    this.menuOnChanged,
     this.enablePassEvent = true,
     required this.child,
   });
@@ -37,7 +40,7 @@ class CustomPopupMenu extends StatefulWidget {
   final double verticalMargin;
   final CustomPopupMenuController? controller;
   final Widget Function() menuBuilder;
-  final void Function(bool)? menuOnChange;
+  final void Function(bool menuIsShowing)? menuOnChanged;
   final bool enablePassEvent;
   final Widget child;
 
@@ -52,9 +55,9 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> with SingleTickerProv
   CustomPopupMenuController? _popupController;
   late AnimationController _animationController;
   late Animation<double> _drawAnimation;
-  late Animation<double> _opacityAnimation;
+  late Animation<double> _cliperAnimation;
 
-// Квадрат меню, по нему мы понимаем рамки нашего контента на экране
+  /// Квадрат меню, по нему мы понимаем рамки нашего контента на экране
   var _menuScreenRect = Rect.zero;
 
   @override
@@ -74,11 +77,20 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> with SingleTickerProv
     );
 
     _drawAnimation = Tween(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: const Interval(0.0, 0.5)),
+      CurvedAnimation(parent: _animationController, curve: const Interval(0.0, 0.5, curve: Curves.linear)),
     );
-    _opacityAnimation = Tween(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: const Interval(0.5, 1.0)),
+    _cliperAnimation = Tween(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: const Interval(0.5, 1.0, curve: Curves.easeInOutQuint)),
     );
+
+    // Слушаем статус анимации чтобы по callback [menuOnChanged] отдавать статус
+    // Полностью закрытого или открытого меню
+    _animationController.addStatusListener((status) {
+      if (status == AnimationStatus.dismissed || status == AnimationStatus.completed) {
+        bool menuIsShowing = _popupController?.menuIsShowing ?? false;
+        widget.menuOnChanged?.call(menuIsShowing);
+      }
+    });
   }
 
   @override
@@ -113,9 +125,9 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> with SingleTickerProv
                 child: CustomPaint(
                   foregroundPainter: _CustomLinePainter(animation: _drawAnimation),
                   child: ClipRect(
-                    clipper: _RectClipper(animation: _opacityAnimation),
+                    clipper: _RectClipper(animation: _cliperAnimation),
                     child: Material(
-                      color: Colors.white,
+                      color: Colors.transparent,
                       child: widget.menuBuilder(),
                     ),
                   ),
@@ -154,7 +166,6 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> with SingleTickerProv
 
   void _updateView() {
     bool menuIsShowing = _popupController?.menuIsShowing ?? false;
-    widget.menuOnChange?.call(menuIsShowing);
     if (menuIsShowing) {
       _showMenu();
     } else {
@@ -170,10 +181,7 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> with SingleTickerProv
         _hideMenu();
         Navigator.of(context).pop();
       },
-      child: GestureDetector(
-        onTap: () => _popupController?.showMenu(),
-        child: widget.child,
-      ),
+      child: widget.child,
     );
   }
 }
@@ -187,6 +195,7 @@ enum _MenuPosition {
   topRight,
 }
 
+/// Необходим для корректного расположения оверлея и его контента на экране
 class _MenuLayoutDelegate extends SingleChildLayoutDelegate {
   _MenuLayoutDelegate({
     required this.anchorSize,
@@ -259,7 +268,8 @@ class _MenuLayoutDelegate extends SingleChildLayoutDelegate {
   bool shouldRelayout(SingleChildLayoutDelegate oldDelegate) => false;
 }
 
-/// Отрисовка контура при появлении [CustomPopupMenu] на экране
+/// Отрисовка контура при появлении [CustomPopupMenu] на экране,
+/// т.е. это та самая черная линия которая описывает контур при открытии оверлея
 class _CustomLinePainter extends CustomPainter {
   _CustomLinePainter({
     required this.animation,
@@ -311,7 +321,7 @@ class _RectClipper extends CustomClipper<Rect> {
 
   @override
   Rect getClip(Size size) {
-    return Rect.fromLTRB(0, size.height*(1-animation.value), size.width, size.height);
+    return Rect.fromLTRB(0, size.height * (1 - animation.value), size.width, size.height);
   }
 
   @override
