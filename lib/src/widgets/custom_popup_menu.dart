@@ -82,15 +82,6 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> with SingleTickerProv
     _cliperAnimation = Tween(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _animationController, curve: const Interval(0.5, 1.0, curve: Curves.easeInOutQuint)),
     );
-
-    // Слушаем статус анимации чтобы по callback [menuOnChanged] отдавать статус
-    // Полностью закрытого или открытого меню
-    _animationController.addStatusListener((status) {
-      if (status == AnimationStatus.dismissed || status == AnimationStatus.completed) {
-        bool menuIsShowing = _popupController?.menuIsShowing ?? false;
-        widget.menuOnChanged?.call(menuIsShowing);
-      }
-    });
   }
 
   @override
@@ -103,6 +94,8 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> with SingleTickerProv
   }
 
   void _showMenu() {
+    // Не добавляем новый оверлей, если еще есть старый
+    if (_overlayEntry != null) return;
     _overlayEntry = OverlayEntry(
       builder: (context) {
         Widget menu = Center(
@@ -151,12 +144,16 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> with SingleTickerProv
       },
     );
     _animationController.forward();
+    // Оверлей на экране, можно оповещать слушателей
+    widget.menuOnChanged?.call(true);
 
     Overlay.of(context).insert(_overlayEntry!);
   }
 
   void _hideMenu() {
     if (_overlayEntry != null) {
+      // Оверлей уходит с экрана, оповещаем слушателей
+      widget.menuOnChanged?.call(false);
       _animationController.reverse().whenComplete(() {
         _overlayEntry?.remove();
         _overlayEntry = null;

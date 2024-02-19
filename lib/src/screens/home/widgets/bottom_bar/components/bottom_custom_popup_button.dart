@@ -46,9 +46,6 @@ class _BottomCustomPopupButtonState extends State<BottomCustomPopupButton> {
       child: IconButton(
         onPressed: () {
           _menuIsShowing ? _customPopupController.hideMenu() : _customPopupController.showMenu();
-          setState(() {
-            _menuIsShowing = !_menuIsShowing;
-          });
         },
         icon: RotationSwitchWidget(
           child: _menuIsShowing
