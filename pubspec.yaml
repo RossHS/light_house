@@ -17,6 +17,8 @@ dependencies:
   flutter_mobx: ^2.2.0+2
   flutter_reactive_ble: ^5.3.1
   get_it: ^7.6.7
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
   logger: ^2.0.2+1
   mobx: ^2.3.0+1
   widgetbook: ^3.7.1

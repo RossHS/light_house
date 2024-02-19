@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:light_house/src/screens/home/widgets/bottom_bar/bottom_bar.dart';
 import 'package:light_house/src/widgets/custom_popup_menu.dart';
@@ -36,8 +38,8 @@ class _BottomCustomPopupButtonState extends State<BottomCustomPopupButton> {
     return CustomPopupMenu(
       controller: _customPopupController,
       menuBuilder: () {
-        return ColoredBox(
-          color: Colors.grey,
+        return  BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
           child: widget.menuWidget,
         );
       },

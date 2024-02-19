@@ -46,10 +46,13 @@ class BottomBar extends StatelessWidget {
               builder: (context) {
                 final color = GetIt.I<RGBController>().color;
                 final brightness = GetIt.I<BrightnessController>().brightness;
-                return LightBubble(
-                  radius: 50,
-                  color: color,
-                  brightness: brightness,
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: LightBubble(
+                    radius: 50,
+                    color: color,
+                    brightness: brightness,
+                  ),
                 );
               },
             ),

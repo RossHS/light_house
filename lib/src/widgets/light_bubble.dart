@@ -38,7 +38,7 @@ class LightBubble extends StatelessWidget {
   /// если включена, то
   final bool isPulsing;
 
-  /// Перевод значения [brightness] из диапазона 0-255 в диапазон 2-10
+  /// Перевод значения [brightness] из диапазона 0-255 в диапазон 1-7
   double get _calcSpreadRadius => (brightness / 255) * (7 - 1) + 1;
 
   @override
