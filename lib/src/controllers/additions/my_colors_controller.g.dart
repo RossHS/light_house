@@ -25,29 +25,20 @@ mixin _$MyColorsController on _MyColorsControllerBase, Store {
     });
   }
 
-  late final _$_MyColorsControllerBaseActionController =
-      ActionController(name: '_MyColorsControllerBase', context: context);
+  late final _$saveColorAsyncAction =
+      AsyncAction('_MyColorsControllerBase.saveColor', context: context);
 
   @override
-  void saveColor(Color color) {
-    final _$actionInfo = _$_MyColorsControllerBaseActionController.startAction(
-        name: '_MyColorsControllerBase.saveColor');
-    try {
-      return super.saveColor(color);
-    } finally {
-      _$_MyColorsControllerBaseActionController.endAction(_$actionInfo);
-    }
+  Future<bool> saveColor(Color color) {
+    return _$saveColorAsyncAction.run(() => super.saveColor(color));
   }
 
+  late final _$deleteColorAsyncAction =
+      AsyncAction('_MyColorsControllerBase.deleteColor', context: context);
+
   @override
-  void deleteColor(Color color) {
-    final _$actionInfo = _$_MyColorsControllerBaseActionController.startAction(
-        name: '_MyColorsControllerBase.deleteColor');
-    try {
-      return super.deleteColor(color);
-    } finally {
-      _$_MyColorsControllerBaseActionController.endAction(_$actionInfo);
-    }
+  Future<bool> deleteColor(Color color) {
+    return _$deleteColorAsyncAction.run(() => super.deleteColor(color));
   }
 
   @override

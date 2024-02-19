@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:light_house/src/utils/mobx_async_value.dart';
@@ -10,40 +12,48 @@ class MyColorsController = _MyColorsControllerBase with _$MyColorsController;
 
 abstract class _MyColorsControllerBase with Store {
   _MyColorsControllerBase({ColorsControllerDelegator? delegator}) {
-    // Код небезопасный, т.к. можно вызывать методы до первичный инициализации [delegator],
-    // Но в рамках этого проекта - это простительно, не вижу смысла переусложнять
-    this.delegator = delegator ?? HiveColorsControllerDelegator();
-    this.delegator.init().then(
-          (value) => myColors = AsyncValue.value(value: value),
-          onError: (error) => myColors = const AsyncValue.error(
-            error: AsyncError(errorMessage: 'Не удалось получить цвета'),
-          ),
+    ColorsControllerDelegator sourceDelegator = delegator ?? HiveColorsControllerDelegator();
+    sourceDelegator.init().then(
+      (value) {
+        _delegator.complete(sourceDelegator);
+        myColors = AsyncValue.value(value: value);
+      },
+      onError: (error) {
+        _delegator.completeError(error);
+        return myColors = const AsyncValue.error(
+          error: AsyncError(errorMessage: 'Не удалось получить цвета'),
         );
+      },
+    );
   }
 
-  late final ColorsControllerDelegator delegator;
+  final Completer<ColorsControllerDelegator> _delegator = Completer();
 
   @observable
   AsyncValue<List<Color>> myColors = const AsyncValue.loading();
 
   /// Запись текущего цвета
   @action
-  void saveColor(Color color) {
-    final savedColor = delegator.saveColor(color);
+  Future<bool> saveColor(Color color) async {
+    final savedColor = (await _delegator.future).saveColor(color);
     if (savedColor != null) {
       myColors = AsyncValue.value(value: [...?myColors.value, savedColor]);
+      return true;
     }
+    return false;
   }
 
   /// Удаление ненужного цвета. Сначала удаляем данные в исходной среде,
   /// а потом только в оперативной памяти
   @action
-  void deleteColor(Color color) {
-    final deletedColor = delegator.deleteColor(color);
+  Future<bool> deleteColor(Color color) async {
+    final deletedColor = (await _delegator.future).deleteColor(color);
     if (deletedColor != null) {
       myColors.value?.remove(deletedColor);
       myColors = AsyncValue.value(value: [...?myColors.value]);
+      return true;
     }
+    return false;
   }
 }
 
