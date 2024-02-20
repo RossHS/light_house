@@ -10,17 +10,18 @@ part 'my_colors_controller.g.dart';
 // ignore: library_private_types_in_public_api
 class MyColorsController = _MyColorsControllerBase with _$MyColorsController;
 
+/// Контроллер сохранение цветов, важно, что он сохраняет только уникальные цвета и не допускает дублей
 abstract class _MyColorsControllerBase with Store {
   _MyColorsControllerBase({ColorsControllerDelegator? delegator}) {
     ColorsControllerDelegator sourceDelegator = delegator ?? HiveColorsControllerDelegator();
     sourceDelegator.init().then(
       (value) {
         _delegator.complete(sourceDelegator);
-        myColors = AsyncValue.value(value: value);
+        _myColors = AsyncValue.value(value: value);
       },
       onError: (error) {
         _delegator.completeError(error);
-        return myColors = const AsyncValue.error(
+        return _myColors = const AsyncValue.error(
           error: AsyncError(errorMessage: 'Не удалось получить цвета'),
         );
       },
@@ -30,14 +31,16 @@ abstract class _MyColorsControllerBase with Store {
   final Completer<ColorsControllerDelegator> _delegator = Completer();
 
   @observable
-  AsyncValue<List<Color>> myColors = const AsyncValue.loading();
+  AsyncValue<Set<Color>> _myColors = const AsyncValue.loading();
+
+  AsyncValue<Set<Color>> get myColors => _myColors;
 
   /// Запись текущего цвета
   @action
   Future<bool> saveColor(Color color) async {
     final savedColor = (await _delegator.future).saveColor(color);
     if (savedColor != null) {
-      myColors = AsyncValue.value(value: [...?myColors.value, savedColor]);
+      _myColors = AsyncValue.value(value: {...?_myColors.value, savedColor});
       return true;
     }
     return false;
@@ -49,8 +52,8 @@ abstract class _MyColorsControllerBase with Store {
   Future<bool> deleteColor(Color color) async {
     final deletedColor = (await _delegator.future).deleteColor(color);
     if (deletedColor != null) {
-      myColors.value?.remove(deletedColor);
-      myColors = AsyncValue.value(value: [...?myColors.value]);
+      _myColors.value?.remove(deletedColor);
+      _myColors = AsyncValue.value(value: {...?_myColors.value});
       return true;
     }
     return false;
@@ -62,7 +65,7 @@ abstract class _MyColorsControllerBase with Store {
 /// а лишь используем интерфейс
 abstract class ColorsControllerDelegator {
   /// Первичные работы необходимые для инициализации делегатора
-  Future<List<Color>> init();
+  Future<Set<Color>> init();
 
   Color? saveColor(Color color);
 
@@ -74,9 +77,9 @@ class HiveColorsControllerDelegator extends ColorsControllerDelegator {
   Box<int>? box;
 
   @override
-  Future<List<Color>> init() async {
+  Future<Set<Color>> init() async {
     box = await Hive.openBox<int>('my_colors');
-    return box!.values.map(Color.new).toList();
+    return box!.values.map(Color.new).toSet();
   }
 
   @override
