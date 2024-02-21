@@ -41,7 +41,7 @@ class LightsPresetsColors extends StatelessWidget {
                       .map<Widget>(
                         (e) => SelectableCircleColor(
                           color: e,
-                          isSelected: rgbController.color == e,
+                          isSelected: rgbController.color.value == e.value,
                           onTap: () {
                             if (rgbController.color != e) {
                               rgbController.color = e;
@@ -68,7 +68,7 @@ class LightsPresetsColors extends StatelessWidget {
                                   (e) => SelectableCircleColor(
                                     key: ValueKey(e),
                                     color: e,
-                                    isSelected: rgbController.color == e,
+                                    isSelected: rgbController.color.value == e.value,
                                     onDoubleTap: () {
                                       myColorsController.deleteColor(e);
                                     },
