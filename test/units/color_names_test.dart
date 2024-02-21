@@ -8,7 +8,7 @@ void main() {
   group('Color names - find', () {
     void shortHand(String desc, Color color, String matcher) {
       test(desc, () {
-        expect(ColorNames.search(color), matcher);
+        expect(ColorNames.search(color).colorName, matcher);
       });
     }
 

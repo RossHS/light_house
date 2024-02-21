@@ -2,13 +2,19 @@ import 'dart:ui';
 
 import 'package:light_house/src/utils/color_names/src/color_names_values.dart';
 
-/// Утилитарный класс с поисков названия цвета, т.е. мы ему передаем [Color], а получаем [String] с названием
+/// Утилитарный класс с поисков названия цвета, т.е. мы ему передаем [Color],
+/// а получаем [String] с названием и ближайший цвет [Color]
 class ColorNames {
   ColorNames._();
 
-  static String search(Color color) {
+  static ({String colorName, Color closestColor}) search(Color color) {
     final inputColorVal = color.value;
-    if (colorNamesMap.containsKey(inputColorVal)) return colorNamesMap[inputColorVal]!;
+    if (colorNamesMap.containsKey(inputColorVal)) {
+      return (
+        colorName: colorNamesMap[inputColorVal]!,
+        closestColor: color,
+      );
+    }
 
     // Начальное значение для минимальной разницы устанавливаем очень большим,
     // чтобы первое сравнение его точно перезаписало
@@ -28,6 +34,9 @@ class ColorNames {
         closestColor = key;
       }
     });
-    return colorNamesMap[closestColor]!;
+    return (
+      colorName: colorNamesMap[closestColor]!,
+      closestColor: Color(closestColor),
+    );
   }
 }
