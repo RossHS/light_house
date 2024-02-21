@@ -43,7 +43,7 @@ class _RunningTextAnimationState extends State<RunningTextAnimation> with Single
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: RunningTextPainter(
-        text: widget.text.split('').join('\n'),
+        text: widget.text,
         textStyle: widget.textStyle,
         animation: _animation,
       ),
@@ -63,6 +63,10 @@ class RunningTextPainter extends CustomPainter {
   final String text;
   final TextStyle textStyle;
   final Animation<double> animation;
+  final double space = 50;
+  final linePaint = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 5;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -71,31 +75,24 @@ class RunningTextPainter extends CustomPainter {
         text: text,
         style: textStyle,
       ),
-      textAlign: TextAlign.center,
+      textAlign: TextAlign.end,
       textDirection: TextDirection.ltr,
     );
     textPainter.layout(minWidth: 0, maxWidth: size.width);
-    final textSpacer = calcSpacer(size.width, textPainter.width);
-    for (var width = 0.0; width <= size.width; width += textSpacer + textPainter.width) {
-      for (var height = -textPainter.height;
-          height <= size.height + textPainter.height;
-          height += textPainter.height.toInt()) {
-        textPainter.paint(
-          canvas,
-          Offset(width.toDouble(), (textPainter.height) * animation.value - textPainter.height + height),
-        );
-      }
+    for (var height = -textPainter.height - space;
+        height <= size.height + textPainter.height;
+        height += textPainter.height.toInt() + space) {
+      final paintHeight = (textPainter.height + space) * animation.value - textPainter.height + height;
+      textPainter.paint(
+        canvas,
+        Offset(size.width - textPainter.width, paintHeight),
+      );
+      canvas.drawLine(Offset(0, paintHeight - space / 2), Offset(size.width, paintHeight - space / 2), linePaint);
     }
-  }
-
-  /// Расчет пробела между строками текста, важно, чтобы текст был "прибит" к краям экрана
-  double calcSpacer(double screenWidth, double textWidth) {
-    final numberOfBlocs = (screenWidth + textWidth) ~/ (2 * textWidth);
-    return (screenWidth - textWidth * numberOfBlocs) / (numberOfBlocs - 1);
   }
 
   @override
   bool shouldRepaint(RunningTextPainter oldDelegate) {
-    return true;
+    return false;
   }
 }

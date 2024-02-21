@@ -8,7 +8,7 @@ extension IntExt on int {
   String get uint24HexFormat => _worker(24, 6);
 
   String _worker(int exponent, int padLength) {
-    assert(this >= 0 && this <= math.pow(2, exponent));
+    assert(this >= 0 && this <= math.pow(2, exponent), 'current value - $this');
     return toRadixString(16).padLeft(padLength,'0');
   }
 }

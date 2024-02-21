@@ -3,8 +3,9 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:light_house/src/controllers/core/rgb_controller.dart';
 import 'package:light_house/src/screens/home/widgets/home_widgets.dart';
+import 'package:light_house/src/utils/color_names/color_names.dart';
 import 'package:light_house/src/utils/extension.dart';
-import 'package:light_house/src/widgets/animated_text_background.dart';
+import 'package:light_house/src/widgets/running_text_animation.dart';
 
 /// Домашний экран приложения, на нем все необходимая информация для управления
 /// Фон - [RunningTextAnimation]
@@ -26,8 +27,11 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Observer(
               builder: (context) {
                 final color = GetIt.I<RGBController>().color;
+                final closestColor = color.getColorName;
                 return RunningTextAnimation(
-                  text: '0x${color.red.uint8HexFormat}${color.green.uint8HexFormat}${color.blue.uint8HexFormat}_',
+                  text: '${closestColor.colorName}\n'
+                      'Похожий - 0x${(closestColor.closestColor.value & 0xFFFFFF).uint24HexFormat}\n'
+                      'Текущий - 0x${color.red.uint8HexFormat}${color.green.uint8HexFormat}${color.blue.uint8HexFormat}',
                   textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
                         color: Colors.black,
                         fontSize: 20,
