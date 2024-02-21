@@ -25,6 +25,24 @@ abstract class _RGBControllerBase with Store {
   @observable
   Color color = const Color(0xFF000000);
 
+  @action
+  Color withRed(int red) {
+    color = color.withRed(red);
+    return color;
+  }
+
+  @action
+  Color withGreen(int green) {
+    color = color.withGreen(green);
+    return color;
+  }
+
+  @action
+  Color withBlue(int blue) {
+    color = color.withBlue(blue);
+    return color;
+  }
+
   void sendColor() {
     GetIt.I<SendDataController>().writeData(
       DataHeader.c,

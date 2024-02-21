@@ -25,6 +25,42 @@ mixin _$RGBController on _RGBControllerBase, Store {
     });
   }
 
+  late final _$_RGBControllerBaseActionController =
+      ActionController(name: '_RGBControllerBase', context: context);
+
+  @override
+  Color withRed(int red) {
+    final _$actionInfo = _$_RGBControllerBaseActionController.startAction(
+        name: '_RGBControllerBase.withRed');
+    try {
+      return super.withRed(red);
+    } finally {
+      _$_RGBControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  Color withGreen(int green) {
+    final _$actionInfo = _$_RGBControllerBaseActionController.startAction(
+        name: '_RGBControllerBase.withGreen');
+    try {
+      return super.withGreen(green);
+    } finally {
+      _$_RGBControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  Color withBlue(int blue) {
+    final _$actionInfo = _$_RGBControllerBaseActionController.startAction(
+        name: '_RGBControllerBase.withBlue');
+    try {
+      return super.withBlue(blue);
+    } finally {
+      _$_RGBControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
