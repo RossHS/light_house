@@ -1,9 +1,9 @@
 import 'dart:ui';
 
 import 'package:get_it/get_it.dart';
-import 'package:light_house/controllers/send_data_controller.dart';
-import 'package:light_house/models/data_headers.dart';
-import 'package:light_house/utils/extension.dart';
+import 'package:light_house/src/controllers/core/send_data_controller.dart';
+import 'package:light_house/src/models/data_headers.dart';
+import 'package:light_house/src/utils/extension.dart';
 import 'package:mobx/mobx.dart';
 
 part 'rgb_controller.g.dart';
@@ -24,6 +24,24 @@ abstract class _RGBControllerBase with Store {
 
   @observable
   Color color = const Color(0xFF000000);
+
+  @action
+  Color withRed(int red) {
+    color = color.withRed(red);
+    return color;
+  }
+
+  @action
+  Color withGreen(int green) {
+    color = color.withGreen(green);
+    return color;
+  }
+
+  @action
+  Color withBlue(int blue) {
+    color = color.withBlue(blue);
+    return color;
+  }
 
   void sendColor() {
     GetIt.I<SendDataController>().writeData(

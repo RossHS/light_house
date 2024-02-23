@@ -1,8 +1,8 @@
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
-import 'package:light_house/models/data_headers.dart';
-import 'package:light_house/utils/logger.dart';
-import 'package:light_house/utils/mobx_async_value.dart';
-import 'package:light_house/utils/utils.dart';
+import 'package:light_house/src/models/data_headers.dart';
+import 'package:light_house/src/utils/logger.dart';
+import 'package:light_house/src/utils/mobx_async_value.dart';
+import 'package:light_house/src/utils/utils.dart';
 import 'package:mobx/mobx.dart';
 
 part 'send_data_controller.g.dart';

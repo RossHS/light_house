@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:light_house/models/data_headers.dart';
-import 'package:light_house/utils/utils.dart';
+import 'package:light_house/src/models/data_headers.dart';
+import 'package:light_house/src/utils/utils.dart';
 
 /// Юнит тест контрольной суммы
 void main() {
