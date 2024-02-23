@@ -20,6 +20,11 @@ Future<void> main() async {
       // Сохранение уже существующего элемента
       await controller.saveColor(Colors.black);
       expect(controller.myColors.value, {Colors.black});
+      // Проверка, сохранен ли этот цвет?
+      var contains = await controller.contains(Colors.black);
+      expect(contains, true);
+      contains = await controller.contains(Colors.green);
+      expect(contains, false);
       // Сохранение нового цвета
       await controller.saveColor(Colors.red);
       expect(controller.myColors.value, {Colors.black, Colors.red});
@@ -55,4 +60,7 @@ class _MockDelegator extends ColorsControllerDelegator {
     final res = _colors.add(color);
     return res ? color : null;
   }
+
+  @override
+  bool contains(Color color) => _colors.contains(color);
 }

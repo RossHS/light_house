@@ -58,6 +58,11 @@ abstract class _MyColorsControllerBase with Store {
     }
     return false;
   }
+
+  /// Проверка, сохранен ли уже такой цвет [color]
+  Future<bool> contains(Color color) async {
+    return (await _delegator.future).contains(color);
+  }
 }
 
 /// Делегатор [MyColorsController], нужен для развязывания кода и мок данных,
@@ -70,6 +75,8 @@ abstract class ColorsControllerDelegator {
   Color? saveColor(Color color);
 
   Color? deleteColor(Color color);
+
+  bool contains(Color color);
 }
 
 /// Делегатор на основе работы Hive
@@ -106,6 +113,11 @@ class HiveColorsControllerDelegator extends ColorsControllerDelegator {
       return color;
     }
     return null;
+  }
+
+  @override
+  bool contains(Color color) {
+    return _findColorIndexInDB(color) >= 0;
   }
 
   int _findColorIndexInDB(Color color) => box!.values.toList().indexWhere((element) => element == color.value);
