@@ -61,7 +61,7 @@ class ObjectFlyAnimationState extends State<ObjectFlyAnimation> with SingleTicke
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 1),
+      duration: const Duration(milliseconds: 500),
     );
     objectFlyingNotifier = widget.objectFlyingNotifier ?? ObjectFlyingNotifier();
   }
@@ -107,9 +107,9 @@ class ObjectFlyAnimationState extends State<ObjectFlyAnimation> with SingleTicke
 
     // Анимация "подлета" виджета
     final scaleAnimation = TweenSequence([
-      TweenSequenceItem(tween: Tween<double>(begin: 0.0, end: 1.0), weight: .15),
-      TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 1.0), weight: .7),
-      TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 0.0), weight: .15),
+      TweenSequenceItem(tween: Tween<double>(begin: 0.0, end: 1.0), weight: .1),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 1.0), weight: .8),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 0.0), weight: .1),
     ]).animate(_animationController);
 
     _overlayEntry = OverlayEntry(
