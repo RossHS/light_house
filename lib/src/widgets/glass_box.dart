@@ -5,12 +5,7 @@ import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
 @widgetbook.UseCase(name: 'GlassBox use case', type: GlassBox)
 Widget glassBoxUseCase(BuildContext context) {
-  // final color = context.knobs.color(
-  //   label: 'Light color',
-  //   initialValue: Colors.greenAccent,
-  // );
-  // final brightness = context.knobs.int.slider(label: 'brightness', initialValue: 100, min: 0, max: 255);
-  return ColoredBox(
+  return const ColoredBox(
     color: Colors.greenAccent,
     child: Center(
       child: GlassBox(

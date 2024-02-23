@@ -88,8 +88,9 @@ class LightsPresetsColors extends StatelessWidget {
                   },
                 ),
                 IconButton(
-                    onPressed: () => GetIt.I<MyColorsController>().saveColor(rgbController.color),
-                    icon: const Icon(Icons.add)),
+                  onPressed: () => GetIt.I<MyColorsController>().saveColor(rgbController.color),
+                  icon: const Icon(Icons.add),
+                ),
               ],
             );
           },
