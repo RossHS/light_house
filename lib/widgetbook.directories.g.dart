@@ -14,6 +14,7 @@ import 'package:light_house/src/widgets/light_bubble.dart' as _i3;
 import 'package:light_house/src/widgets/object_fly_animation.dart' as _i4;
 import 'package:light_house/src/widgets/rotation_switch_widget.dart' as _i5;
 import 'package:light_house/src/widgets/selectable_circle_color.dart' as _i6;
+import 'package:light_house/src/widgets/shake_jump_animation.dart' as _i7;
 import 'package:widgetbook/widgetbook.dart' as _i1;
 
 final directories = <_i1.WidgetbookNode>[
@@ -53,6 +54,13 @@ final directories = <_i1.WidgetbookNode>[
         useCase: _i1.WidgetbookUseCase(
           name: 'SelectableCircleColor use case',
           builder: _i6.selectableCircleColorUseCase,
+        ),
+      ),
+      _i1.WidgetbookLeafComponent(
+        name: 'ShakeJumpAnimation',
+        useCase: _i1.WidgetbookUseCase(
+          name: 'ShakeJumpAnimation use case',
+          builder: _i7.shakeJumpAnimationUseCase,
         ),
       ),
     ],
