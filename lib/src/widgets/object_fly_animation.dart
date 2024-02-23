@@ -1,20 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
+
+/// Состояния анимации
+enum ObjectFlyingStates {
+  unknown,
+  started,
+  ended,
+}
+
+/// Оповещатель, через него мы можем получать информацию о
+/// состояниях перехода в разных участках приложения
+class ObjectFlyingNotifier extends ValueNotifier<ObjectFlyingStates> {
+  ObjectFlyingNotifier() : super(ObjectFlyingStates.unknown);
+}
 
 /// Анимация перелета одного элемента в другой
 class ObjectFlyAnimation extends StatefulWidget {
   const ObjectFlyAnimation({
     super.key,
     required this.destinationGlobalKey,
+    this.objectFlyingNotifier,
     required this.child,
-    this.onAnimationEnd,
   });
 
   /// Ключи виджета в который полетит элемент
   final GlobalKey destinationGlobalKey;
 
-  /// Обратный вызов, который срабатываем при окончании анимации
-  final VoidCallback? onAnimationEnd;
+  /// Нотифаер, слушая его мы можем понимать состояния процесса анимации
+  final ObjectFlyingNotifier? objectFlyingNotifier;
+
   final Widget child;
 
   static ObjectFlyAnimationState of(BuildContext context) {
@@ -30,30 +45,39 @@ class ObjectFlyAnimation extends StatefulWidget {
     return state!;
   }
 
+  static ObjectFlyingNotifier notifier(BuildContext context) => ObjectFlyAnimation.of(context).objectFlyingNotifier;
+
   @override
   State<ObjectFlyAnimation> createState() => ObjectFlyAnimationState();
 }
 
 class ObjectFlyAnimationState extends State<ObjectFlyAnimation> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
+  late final ObjectFlyingNotifier objectFlyingNotifier;
+  late AnimationController _animationController;
   OverlayEntry? _overlayEntry;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
+    _animationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 1),
     );
+    objectFlyingNotifier = widget.objectFlyingNotifier ?? ObjectFlyingNotifier();
   }
 
   @override
   void dispose() {
     _overlayEntry?.remove();
-    _controller.dispose();
+    _animationController.dispose();
+    if (widget.objectFlyingNotifier == null) {
+      objectFlyingNotifier.dispose();
+    }
     super.dispose();
   }
 
+  /// Запуск анимации, где [sourceWidget] - ключ того виджета откуда пойдет анимация,
+  /// а [flyingWidget] - это тот виджет который мы подвергнем анимации
   void startFlyAnimation({required GlobalKey sourceWidget, required Widget flyingWidget}) {
     final destBox = widget.destinationGlobalKey.currentContext?.findRenderObject() as RenderBox;
     final destPosition = destBox.localToGlobal(Offset.zero);
@@ -72,32 +96,50 @@ class ObjectFlyAnimationState extends State<ObjectFlyAnimation> with SingleTicke
 
   void _showOverlay(Offset startOffset, Offset endOffset, Widget flyingObject) {
     if (_overlayEntry != null) return;
-    final movingAnimation = Tween<Offset>(begin: startOffset, end: endOffset).animate(_controller);
+
+    // Анимация перемещения виджета по экрану от двух центров
+    final movingAnimation = Tween<Offset>(begin: startOffset, end: endOffset).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.slowMiddle,
+      ),
+    );
+
+    // Анимация "подлета" виджета
+    final scaleAnimation = TweenSequence([
+      TweenSequenceItem(tween: Tween<double>(begin: 0.0, end: 1.0), weight: .15),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 1.0), weight: .7),
+      TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 0.0), weight: .15),
+    ]).animate(_animationController);
+
     _overlayEntry = OverlayEntry(
       builder: (context) {
         return AnimatedBuilder(
           animation: movingAnimation,
-          builder: (BuildContext context, Widget? child) {
+          builder: (_, __) {
             return _PositionCentered(
               center: movingAnimation.value,
-              child: child!,
+              child: Transform.scale(
+                scale: scaleAnimation.value,
+                child: flyingObject,
+              ),
             );
           },
-          child: flyingObject,
         );
       },
     );
-    _controller.forward(from: 0).then((value) {
+    _animationController.forward(from: 0).then((value) {
       _hideOverlay();
     });
     Overlay.of(context).insert(_overlayEntry!);
+    objectFlyingNotifier.value = ObjectFlyingStates.started;
   }
 
   void _hideOverlay() {
     if (_overlayEntry == null) return;
     _overlayEntry?.remove();
     _overlayEntry = null;
-    widget.onAnimationEnd?.call();
+    objectFlyingNotifier.value = ObjectFlyingStates.ended;
   }
 
   @override
@@ -169,5 +211,82 @@ class _PositionCenteredRenderObject extends RenderProxyBox {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty<Offset>('center', _center));
+  }
+}
+
+//---------------------Widgetbook----------------------//
+@widgetbook.UseCase(name: 'ObjectFlyAnimation use case', type: ObjectFlyAnimation)
+Widget objectFlyAnimationUseCase(BuildContext context) {
+  return const _WidgetbookExample();
+}
+
+class _WidgetbookExample extends StatefulWidget {
+  const _WidgetbookExample();
+
+  @override
+  State<_WidgetbookExample> createState() => _WidgetbookExampleState();
+}
+
+class _WidgetbookExampleState extends State<_WidgetbookExample> {
+  final GlobalKey _destKey = GlobalKey(debugLabel: 'flying_animation_dest_key');
+  final GlobalKey _sourceKey = GlobalKey(debugLabel: 'flying_animation_source_key');
+  final _notifier = ObjectFlyingNotifier();
+
+  // Список со состояниями анимации
+  final _statesList = <String>[];
+
+  @override
+  void initState() {
+    super.initState();
+    _notifier.addListener(() => setState(() => _statesList.add('${DateTime.now()}: ${_notifier.value}')));
+  }
+
+  @override
+  void dispose() {
+    _notifier.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ObjectFlyAnimation(
+        destinationGlobalKey: _destKey,
+        objectFlyingNotifier: _notifier,
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Icon(key: _sourceKey, Icons.start),
+                Icon(key: _destKey, Icons.stop),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Builder(
+              // Чисто для получения контекста
+              builder: (context) {
+                return ElevatedButton(
+                  onPressed: () {
+                    ObjectFlyAnimation.of(context).startFlyAnimation(
+                      sourceWidget: _sourceKey,
+                      flyingWidget: const Icon(Icons.ac_unit),
+                    );
+                  },
+                  child: const Text('Run animation'),
+                );
+              },
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _statesList.length,
+                itemBuilder: (context, index) => Text(_statesList[index]),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

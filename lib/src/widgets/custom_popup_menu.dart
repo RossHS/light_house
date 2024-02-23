@@ -223,27 +223,27 @@ class _MenuLayoutDelegate extends SingleChildLayoutDelegate {
     }
 
     contentOffset = switch (menuPosition) {
-      _MenuPosition.bottomCenter => contentOffset = Offset(
+      _MenuPosition.bottomCenter => Offset(
           anchorCenterX - childSize.width / 2,
           anchorBottomY + verticalMargin,
         ),
-      _MenuPosition.bottomLeft => contentOffset = Offset(
+      _MenuPosition.bottomLeft => Offset(
           0,
           anchorBottomY + verticalMargin,
         ),
-      _MenuPosition.bottomRight => contentOffset = Offset(
+      _MenuPosition.bottomRight => Offset(
           size.width - childSize.width,
           anchorBottomY + verticalMargin,
         ),
-      _MenuPosition.topCenter => contentOffset = Offset(
+      _MenuPosition.topCenter => Offset(
           anchorCenterX - childSize.width / 2,
           anchorTopY - verticalMargin - childSize.height,
         ),
-      _MenuPosition.topLeft => contentOffset = Offset(
+      _MenuPosition.topLeft => Offset(
           0,
           anchorTopY - verticalMargin - childSize.height,
         ),
-      _MenuPosition.topRight => contentOffset = Offset(
+      _MenuPosition.topRight => Offset(
           size.width - childSize.width,
           anchorTopY - verticalMargin - childSize.height,
         ),

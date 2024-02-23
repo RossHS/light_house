@@ -11,8 +11,9 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:light_house/src/widgets/glass_box.dart' as _i2;
 import 'package:light_house/src/widgets/light_bubble.dart' as _i3;
-import 'package:light_house/src/widgets/rotation_switch_widget.dart' as _i4;
-import 'package:light_house/src/widgets/selectable_circle_color.dart' as _i5;
+import 'package:light_house/src/widgets/object_fly_animation.dart' as _i4;
+import 'package:light_house/src/widgets/rotation_switch_widget.dart' as _i5;
+import 'package:light_house/src/widgets/selectable_circle_color.dart' as _i6;
 import 'package:widgetbook/widgetbook.dart' as _i1;
 
 final directories = <_i1.WidgetbookNode>[
@@ -34,17 +35,24 @@ final directories = <_i1.WidgetbookNode>[
         ),
       ),
       _i1.WidgetbookLeafComponent(
+        name: 'ObjectFlyAnimation',
+        useCase: _i1.WidgetbookUseCase(
+          name: 'ObjectFlyAnimation use case',
+          builder: _i4.objectFlyAnimationUseCase,
+        ),
+      ),
+      _i1.WidgetbookLeafComponent(
         name: 'RotationSwitchWidget',
         useCase: _i1.WidgetbookUseCase(
           name: 'RotationSwitchWidget use case',
-          builder: _i4.rotationSwitchWidgetUseCase,
+          builder: _i5.rotationSwitchWidgetUseCase,
         ),
       ),
       _i1.WidgetbookLeafComponent(
         name: 'SelectableCircleColor',
         useCase: _i1.WidgetbookUseCase(
           name: 'SelectableCircleColor use case',
-          builder: _i5.selectableCircleColorUseCase,
+          builder: _i6.selectableCircleColorUseCase,
         ),
       ),
     ],

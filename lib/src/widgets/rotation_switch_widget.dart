@@ -66,6 +66,7 @@ class _RotationSwitchTestState extends State<_RotationSwitchTest> {
     return IconButton(
       onPressed: () => setState(() => _state = !_state),
       icon: RotationSwitchWidget(
+        duration: widget.duration,
         child: _state
             ? Icon(key: ValueKey(_state), Icons.light_mode)
             : Icon(key: ValueKey(_state), Icons.nights_stay_sharp),
