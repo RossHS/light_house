@@ -1,6 +1,9 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:light_house/src/utils/extension.dart';
+import 'package:widgetbook/widgetbook.dart';
+import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
 class DeleteItemWidget extends StatefulWidget {
   const DeleteItemWidget({
@@ -69,11 +72,7 @@ class _DeleteItemWidgetState extends State<DeleteItemWidget> with TickerProvider
   }
 
   void _animateToValue() {
-    if (widget.delete) {
-      _deleteController.forward();
-    } else {
-      _deleteController.reverse();
-    }
+    widget.delete ? _deleteController.forward() : _deleteController.reverse();
   }
 }
 
@@ -134,4 +133,65 @@ class _ClosePainter extends CustomPainter {
   bool shouldRepaint(_ClosePainter oldDelegate) => oldDelegate.closeColor != closeColor;
 }
 
-// TODO дописать виджетбук
+//---------------------Widgetbook-----------------//
+@widgetbook.UseCase(name: 'DeleteItemWidget use case', type: DeleteItemWidget)
+Widget deleteItemWidgetWidgetUseCase(BuildContext context) {
+  final color = context.knobs.colorOrNull(label: 'Close Color');
+  return Center(
+    child: _DeleteItemWidgetTest(color),
+  );
+}
+
+/// Вспомогательный виджет для [Widgetbook], тут мы просто проверяем поведение [RotationSwitchWidget]
+class _DeleteItemWidgetTest extends StatefulWidget {
+  const _DeleteItemWidgetTest(this.closeColor);
+
+  final Color? closeColor;
+
+  @override
+  State<_DeleteItemWidgetTest> createState() => _DeleteItemWidgetTestState();
+}
+
+class _DeleteItemWidgetTestState extends State<_DeleteItemWidgetTest> {
+  var delete = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ...[
+              Colors.black,
+              Colors.amber,
+              Colors.redAccent,
+              Colors.greenAccent,
+            ].map(
+              (e) => Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: DeleteItemWidget(
+                  delete: delete,
+                  closeColor: widget.closeColor ?? e.calcOppositeColor,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: e,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const SizedBox.square(dimension: 35),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+        ElevatedButton(
+          onPressed: () => setState(() => delete = !delete),
+          child: const Text('Toggle'),
+        ),
+      ],
+    );
+  }
+}
