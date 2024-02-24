@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:light_house/src/utils/extension.dart';
 import 'package:light_house/src/widgets/rotation_switch_widget.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
@@ -68,9 +69,13 @@ class _SelectableCircleColorState extends State<SelectableCircleColor> with Sing
 
   @override
   Widget build(BuildContext context) {
+    final oppositeColor = widget.color.calcOppositeColor;
     return RepaintBoundary(
       child: CustomPaint(
-        foregroundPainter: _CirclePainter(animation: _circlePaintAnimation),
+        foregroundPainter: _CirclePainter(
+          animation: _circlePaintAnimation,
+          paintColor: oppositeColor,
+        ),
         child: Material(
           color: widget.color,
           shape: const CircleBorder(),
@@ -82,7 +87,7 @@ class _SelectableCircleColorState extends State<SelectableCircleColor> with Sing
               dimension: widget.radius.toDouble(),
               child: RotationSwitchWidget(
                 duration: _duration,
-                child: widget.isSelected ? const Icon(Icons.check) : const SizedBox.shrink(),
+                child: widget.isSelected ? Icon(Icons.check, color: oppositeColor) : const SizedBox.shrink(),
               ),
             ),
           ),
@@ -94,23 +99,24 @@ class _SelectableCircleColorState extends State<SelectableCircleColor> with Sing
 
 /// Отрисовка границы выбранного круга
 class _CirclePainter extends CustomPainter {
-  _CirclePainter({required this.animation}) : super(repaint: animation);
+  _CirclePainter({required this.animation, this.paintColor}) : super(repaint: animation);
 
   final Animation<double> animation;
-  final _border = Paint()
-    ..color = Colors.black
-    ..strokeWidth = 0.5
-    ..style = PaintingStyle.stroke;
+  final Color? paintColor;
 
   @override
   void paint(Canvas canvas, Size size) {
+    final border = Paint()
+      ..color = paintColor ?? Colors.black
+      ..strokeWidth = 0.5
+      ..style = PaintingStyle.stroke;
     if (animation.value == 0.0) return;
     canvas.drawArc(
       Rect.fromCircle(center: Offset(size.width / 2, size.height / 2), radius: size.width / 2),
       -pi / 2,
       2 * pi * animation.value,
       false,
-      _border,
+      border,
     );
   }
 
