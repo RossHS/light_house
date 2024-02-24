@@ -3,6 +3,9 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:light_house/src/controllers/additions/my_colors_controller.dart';
 import 'package:light_house/src/controllers/core/rgb_controller.dart';
+import 'package:light_house/src/utils/extension.dart';
+import 'package:light_house/src/widgets/delete_item_widget.dart';
+import 'package:light_house/src/widgets/rotation_switch_widget.dart';
 import 'package:light_house/src/widgets/selectable_circle_color.dart';
 
 const _presetColors = [
@@ -23,18 +26,18 @@ class LightsPresetsColors extends StatelessWidget {
       width: MediaQuery.of(context).size.width / 1.5,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Observer(
-          builder: (context) {
-            final rgbController = GetIt.I<RGBController>();
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Цвета',
-                  style: textTheme.headlineSmall,
-                ),
-                Wrap(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Цвета',
+              style: textTheme.headlineSmall,
+            ),
+            Observer(
+              builder: (context) {
+                final rgbController = GetIt.I<RGBController>();
+                return Wrap(
                   runSpacing: 8,
                   spacing: 8,
                   children: _presetColors
@@ -50,52 +53,92 @@ class LightsPresetsColors extends StatelessWidget {
                         ),
                       )
                       .toList(),
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  'Мои цвета',
-                  style: textTheme.headlineSmall,
-                ),
-                Observer(
-                  builder: (context) {
-                    final myColorsController = GetIt.I<MyColorsController>();
-                    return myColorsController.myColors.map(
-                      value: (value) => Wrap(
-                        runSpacing: 8,
-                        spacing: 8,
-                        children: value.value
-                                ?.map(
-                                  (e) => SelectableCircleColor(
-                                    key: ValueKey(e),
-                                    color: e,
-                                    isSelected: rgbController.color.value == e.value,
-                                    onDoubleTap: () {
-                                      myColorsController.deleteColor(e);
-                                    },
-                                    onTap: () {
-                                      if (rgbController.color != e) {
-                                        rgbController.color = e;
-                                      }
-                                    },
-                                  ),
-                                )
-                                .toList() ??
-                            [],
-                      ),
-                      error: (error) => const SizedBox(),
-                      loading: (loading) => const SizedBox(),
-                    );
-                  },
-                ),
-                IconButton(
-                  onPressed: () => GetIt.I<MyColorsController>().saveColor(rgbController.color),
-                  icon: const Icon(Icons.add),
-                ),
-              ],
-            );
-          },
+                );
+              },
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Мои цвета',
+              style: textTheme.headlineSmall,
+            ),
+            const _MySavedColors(),
+          ],
         ),
       ),
+    );
+  }
+}
+
+/// Виджет моих сохраненных цветов, если [delete] - true, то тогда при нажатии,
+/// мы можем удалять виджет, если [delete] - false, то нажатие выбирает цвет
+class _MySavedColors extends StatefulWidget {
+  const _MySavedColors();
+
+  @override
+  State<_MySavedColors> createState() => _MySavedColorsState();
+}
+
+class _MySavedColorsState extends State<_MySavedColors> {
+  var _delete = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Observer(
+      builder: (context) {
+        final rgbController = GetIt.I<RGBController>();
+        final myColorsController = GetIt.I<MyColorsController>();
+        final myColors = myColorsController.myColors.value ?? {};
+        if (myColors.isEmpty) {
+          return Text(
+            'Пока тут пусто',
+            style: textTheme.bodyMedium,
+          );
+        }
+        return Wrap(
+          runSpacing: 8,
+          spacing: 8,
+          children: [
+            Material(
+              color: Colors.transparent,
+              shape: const CircleBorder(),
+              clipBehavior: Clip.hardEdge,
+              child: InkResponse(
+                onTap: () => setState(() => _delete = !_delete),
+                child: SizedBox.square(
+                  dimension: 35,
+                  child: RotationSwitchWidget(
+                    child: _delete
+                        ? Icon(key: ValueKey(_delete), Icons.close)
+                        : Icon(key: ValueKey(_delete), Icons.delete),
+                  ),
+                ),
+              ),
+            ),
+            ...myColors.map(
+              (e) => DeleteItemWidget(
+                delete: _delete,
+                closeColor: e.calcOppositeColor,
+                child: SelectableCircleColor(
+                  key: ValueKey(e),
+                  color: e,
+                  isSelected: rgbController.color.value == e.value && !_delete,
+                  onTap: () {
+                    // В зависимости от режима, мы выбираем, удаление или включение цвета
+                    if (!_delete) {
+                      if (rgbController.color.value != e.value) {
+                        rgbController.color = e;
+                      }
+                    } else {
+                      myColorsController.deleteColor(e);
+                    }
+                  },
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
