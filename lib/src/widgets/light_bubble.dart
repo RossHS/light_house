@@ -13,13 +13,13 @@ Widget lightBubbleUseCase(BuildContext context) {
 }
 
 /// Виджет индикатора цвета, просто круглая "лампочка"
-class LightBubble extends StatelessWidget {
+class LightBubble extends ImplicitlyAnimatedWidget {
   const LightBubble({
     super.key,
     required this.color,
     required this.brightness,
     this.radius = 25,
-    this.isPulsing = false,
+    super.duration = const Duration(milliseconds: 300),
   }) : assert(
           brightness >= 0 && brightness <= 255,
           'brightness value is out of range, current brightness - $brightness',
@@ -34,28 +34,42 @@ class LightBubble extends StatelessWidget {
   /// Радиус круга
   final int radius;
 
-  /// Включена ли анимация пульсации свечения или нет, если нет, то картинка статична
-  /// если включена, то
-  final bool isPulsing;
+  @override
+  AnimatedWidgetBaseState<LightBubble> createState() => _LightBubbleState();
+}
 
-  /// Перевод значения [brightness] из диапазона 0-255 в диапазон 1-7
-  double get _calcSpreadRadius => (brightness / 255) * (7 - 1) + 1;
+class _LightBubbleState extends AnimatedWidgetBaseState<LightBubble> {
+  ColorTween? _color;
+  IntTween? _brightness;
+
+  /// Перевод значения [widget.brightness] из диапазона 0-255 в диапазон 1-7
+  double get _calcSpreadRadius => (_brightness!.evaluate(animation) / 255) * (7 - 1) + 1;
 
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: color,
+        color: _color?.evaluate(animation),
         borderRadius: BorderRadius.circular(255),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.7),
+            color: _color!.evaluate(animation)!,
             spreadRadius: _calcSpreadRadius,
             blurRadius: 15,
           ),
         ],
       ),
-      child: SizedBox.square(dimension: radius.toDouble()),
+      child: SizedBox.square(dimension: widget.radius.toDouble()),
     );
+  }
+
+  @override
+  void forEachTween(TweenVisitor<dynamic> visitor) {
+    _color = visitor(_color, widget.color, (dynamic value) => ColorTween(begin: value as Color)) as ColorTween?;
+    _brightness = visitor(
+      _brightness,
+      widget.brightness,
+      (dynamic value) => IntTween(begin: value as int),
+    ) as IntTween?;
   }
 }
