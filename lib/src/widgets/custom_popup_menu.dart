@@ -98,6 +98,7 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> with SingleTickerProv
     if (_overlayEntry != null) return;
     _overlayEntry = OverlayEntry(
       builder: (context) {
+        final theme = Theme.of(context);
         Widget menu = Center(
           child: ConstrainedBox(
             constraints: BoxConstraints(
@@ -113,10 +114,12 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> with SingleTickerProv
                 verticalMargin: widget.verticalMargin,
                 onScreenRectCalculated: (rect) => _menuScreenRect = rect,
               ),
-              // TODO 17.02.2024 - подумать о стиле, мб будем брать из темы контекста?
               child: RepaintBoundary(
                 child: CustomPaint(
-                  foregroundPainter: _CustomLinePainter(animation: _drawAnimation),
+                  foregroundPainter: _CustomLinePainter(
+                    animation: _drawAnimation,
+                    lineColor: theme.colorScheme.onSurface,
+                  ),
                   child: ClipRect(
                     clipper: _RectClipper(animation: _cliperAnimation),
                     child: Material(
@@ -270,11 +273,13 @@ class _MenuLayoutDelegate extends SingleChildLayoutDelegate {
 class _CustomLinePainter extends CustomPainter {
   _CustomLinePainter({
     required this.animation,
+    this.lineColor,
   }) : super(repaint: animation);
 
   final Animation<double> animation;
+  final Color? lineColor;
+
   final _border = Paint()
-    ..color = Colors.black
     ..strokeWidth = 0.5
     ..style = PaintingStyle.stroke;
 
@@ -300,8 +305,8 @@ class _CustomLinePainter extends CustomPainter {
       topPath.lineTo((currentPathLen - size.height).clamp(0, size.width), 0);
     }
 
-    canvas.drawPath(topPath, _border);
-    canvas.drawPath(rightPath, _border);
+    canvas.drawPath(topPath, _border..color = lineColor ?? Colors.black);
+    canvas.drawPath(rightPath, _border..color = lineColor ?? Colors.black);
   }
 
   @override

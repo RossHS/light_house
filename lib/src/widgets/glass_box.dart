@@ -42,15 +42,16 @@ class GlassBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return ClipRect(
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: glassColor.withOpacity(opacity),
-            border: const Border(
+            border: Border(
               top: BorderSide(
-                color: Colors.black,
+                color: theme.colorScheme.onSurface,
                 width: 0.5,
               ),
             ),
