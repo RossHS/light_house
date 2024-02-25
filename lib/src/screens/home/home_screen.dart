@@ -33,7 +33,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       'Похожий - 0x${(closestColor.closestColor.value & 0xFFFFFF).uint24HexFormat}\n'
                       'Текущий - 0x${color.red.uint8HexFormat}${color.green.uint8HexFormat}${color.blue.uint8HexFormat}',
                   textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        color: Colors.black,
                         fontSize: 20,
                         fontWeight: FontWeight.w100,
                       ),

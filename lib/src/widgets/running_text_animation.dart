@@ -41,11 +41,13 @@ class _RunningTextAnimationState extends State<RunningTextAnimation> with Single
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return CustomPaint(
       painter: RunningTextPainter(
         text: widget.text,
         textStyle: widget.textStyle,
         animation: _animation,
+        lineColor: theme.colorScheme.onSurface,
       ),
       // Размер на весь экран
       size: Size.infinite,
@@ -58,11 +60,14 @@ class RunningTextPainter extends CustomPainter {
     required this.text,
     required this.textStyle,
     required this.animation,
+    this.lineColor,
   }) : super(repaint: animation);
 
   final String text;
   final TextStyle textStyle;
   final Animation<double> animation;
+  final Color? lineColor;
+
   final double space = 50;
   final linePaint = Paint()
     ..style = PaintingStyle.stroke
@@ -87,7 +92,11 @@ class RunningTextPainter extends CustomPainter {
         canvas,
         Offset(size.width - textPainter.width, paintHeight),
       );
-      canvas.drawLine(Offset(0, paintHeight - space / 2), Offset(size.width, paintHeight - space / 2), linePaint);
+      canvas.drawLine(
+        Offset(0, paintHeight - space / 2),
+        Offset(size.width, paintHeight - space / 2),
+        linePaint..color = lineColor ?? Colors.black,
+      );
     }
   }
 

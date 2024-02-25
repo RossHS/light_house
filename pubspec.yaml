@@ -12,6 +12,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  collection: any
+  material_color_utilities: any
+
   cupertino_icons: ^1.0.6
   flutter_colorpicker: ^1.0.3
   flutter_mobx: ^2.2.0+2
@@ -21,6 +24,7 @@ dependencies:
   hive_flutter: ^1.1.0
   logger: ^2.0.2+1
   mobx: ^2.3.0+1
+  shared_preferences: ^2.2.2
   widgetbook: ^3.7.1
   widgetbook_annotation: ^3.1.0
 

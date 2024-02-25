@@ -3,6 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:light_house/src/controllers/core/play_mode_controller.dart';
 import 'package:light_house/src/models/play_mode_models.dart';
+import 'package:light_house/src/screens/home/widgets/bottom_bar/components/app_theme_change_button.dart';
 import 'package:light_house/src/screens/home/widgets/bottom_bar/components/bottom_bar_middle_button.dart';
 import 'package:light_house/src/screens/home/widgets/bottom_bar/components/bottom_bar_mycolor_button.dart';
 import 'package:light_house/src/screens/home/widgets/bottom_bar/components/bottom_custom_popup_button.dart';
@@ -48,30 +49,36 @@ class _BottomBarState extends State<BottomBar> {
                 ],
               ),
               middle: const BottomBarMiddleButton(),
-              trailing: Observer(
-                builder: (context) {
-                  final playModeController = GetIt.I<PlayModeController>();
-                  return DropdownButton<PlayModeBase>(
-                    value: playModeController.playMode,
-                    items: const [
-                      DropdownMenuItem<PlayModeBase>(
-                        value: DisabledPlayMode(),
-                        child: Text('Отключен'),
-                      ),
-                      DropdownMenuItem<PlayModeBase>(
-                        value: BrightnessPlayMode(),
-                        child: Text('Плавная яркость'),
-                      ),
-                      DropdownMenuItem<PlayModeBase>(
-                        value: ChangeColorPlayMode(),
-                        child: Text('Плавный цвет'),
-                      ),
-                    ],
-                    onChanged: (value) {
-                      if (value != null) playModeController.playMode = value;
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const AppThemeChangeButton(),
+                  Observer(
+                    builder: (context) {
+                      final playModeController = GetIt.I<PlayModeController>();
+                      return DropdownButton<PlayModeBase>(
+                        value: playModeController.playMode,
+                        items: const [
+                          DropdownMenuItem<PlayModeBase>(
+                            value: DisabledPlayMode(),
+                            child: Text('Off'),
+                          ),
+                          DropdownMenuItem<PlayModeBase>(
+                            value: BrightnessPlayMode(),
+                            child: Text('B'),
+                          ),
+                          DropdownMenuItem<PlayModeBase>(
+                            value: ChangeColorPlayMode(),
+                            child: Text('C'),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) playModeController.playMode = value;
+                        },
+                      );
                     },
-                  );
-                },
+                  ),
+                ],
               ),
             ),
           ),
