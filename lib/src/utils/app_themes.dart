@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_color_utilities/material_color_utilities.dart';
 
 /// Здесь собраны все темы приложения
 
@@ -52,3 +53,18 @@ final dartTheme = ThemeData(
     brightness: Brightness.dark,
   ),
 );
+
+
+/// Генерация темы по входному цвету и яркости, по сути имеем все то-же самое. то и под капотом в Flutter,
+/// С той лишь разницей, что явно устанавливаем [background], дабы он был более "ярким"
+ThemeData generateThemeData({required Color seedColor, required Brightness brightness}) {
+  final palette = CorePalette.contentOf(seedColor.value);
+  return ThemeData(
+    fontFamily: 'JetBrains Mono',
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: seedColor,
+      brightness: brightness,
+      background: Color(brightness == Brightness.light ? palette.primary.get(90) : palette.neutral.get(20)),
+    ),
+  );
+}

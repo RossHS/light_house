@@ -19,27 +19,39 @@ abstract class _AppThemeControllerBase with Store {
 
   /// Тема приложения - темная, системная или светлая
   @observable
-  ThemeMode? _themeMode;
+  ThemeModeExtension? _themeMode;
 
-  ThemeMode get themeMode => _themeMode!;
+  ThemeModeExtension get themeMode => _themeMode!;
 
   @action
-  void setThemeMode(ThemeMode themeMode) {
+  void setThemeMode(ThemeModeExtension themeMode) {
     _themeMode = themeMode;
     _prefs.setString(sp.themeModeKey, themeMode.name);
   }
 
   @action
   void setNext() {
-    const themeValues = ThemeMode.values;
+    const themeValues = ThemeModeExtension.values;
     final index = themeValues.indexOf(themeMode);
     setThemeMode(themeValues[(index + 1) % themeValues.length]);
   }
 
-  ThemeMode _parseThemeMode() {
+  ThemeModeExtension _parseThemeMode() {
     final themeModeValue = _prefs.getString(sp.themeModeKey);
-    if (themeModeValue == null) return ThemeMode.system;
-    final savedThemeMode = ThemeMode.values.firstWhereOrNull((theme) => theme.name == themeModeValue);
-    return savedThemeMode ?? ThemeMode.system;
+    if (themeModeValue == null) return ThemeModeExtension.systemLight;
+    final savedThemeMode = ThemeModeExtension.values.firstWhereOrNull((theme) => theme.name == themeModeValue);
+    return savedThemeMode ?? ThemeModeExtension.systemLight;
   }
+}
+
+/// Расширение для стандартного [ThemeMode]
+enum ThemeModeExtension {
+  systemLight(ThemeMode.system),
+  systemDark(ThemeMode.system),
+  light(ThemeMode.light),
+  dark(ThemeMode.dark);
+
+  const ThemeModeExtension(this.rawMode);
+
+  final ThemeMode rawMode;
 }

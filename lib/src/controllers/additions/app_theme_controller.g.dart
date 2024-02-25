@@ -13,13 +13,13 @@ mixin _$AppThemeController on _AppThemeControllerBase, Store {
       Atom(name: '_AppThemeControllerBase._themeMode', context: context);
 
   @override
-  ThemeMode? get _themeMode {
+  ThemeModeExtension? get _themeMode {
     _$_themeModeAtom.reportRead();
     return super._themeMode;
   }
 
   @override
-  set _themeMode(ThemeMode? value) {
+  set _themeMode(ThemeModeExtension? value) {
     _$_themeModeAtom.reportWrite(value, super._themeMode, () {
       super._themeMode = value;
     });
@@ -29,7 +29,7 @@ mixin _$AppThemeController on _AppThemeControllerBase, Store {
       ActionController(name: '_AppThemeControllerBase', context: context);
 
   @override
-  void setThemeMode(ThemeMode themeMode) {
+  void setThemeMode(ThemeModeExtension themeMode) {
     final _$actionInfo = _$_AppThemeControllerBaseActionController.startAction(
         name: '_AppThemeControllerBase.setThemeMode');
     try {

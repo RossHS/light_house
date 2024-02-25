@@ -13,7 +13,7 @@ dependencies:
     sdk: flutter
 
   collection: any
-
+  material_color_utilities: any
 
   cupertino_icons: ^1.0.6
   flutter_colorpicker: ^1.0.3
