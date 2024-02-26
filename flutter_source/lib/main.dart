@@ -4,10 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:light_house/src/controllers/additions/app_theme_controller.dart';
 import 'package:light_house/src/controllers/additions/my_colors_controller.dart';
-import 'package:light_house/src/controllers/core/brightness_controller.dart';
-import 'package:light_house/src/controllers/core/play_mode_controller.dart';
-import 'package:light_house/src/controllers/core/rgb_controller.dart';
-import 'package:light_house/src/controllers/core/send_data_controller.dart';
+import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
 import 'package:light_house/src/screens/home/home_screen.dart';
 import 'package:light_house/src/utils/app_themes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,7 +26,10 @@ class MyApp extends StatelessWidget {
         final appThemeController = GetIt.I<AppThemeController>();
         return MaterialApp(
           title: 'Light House',
-          themeMode: appThemeController.themeMode.rawMode,
+          themeMode: switch (appThemeController.themeMode) {
+            ThemeModeExtension.dark => ThemeMode.dark,
+            _ => ThemeMode.light,
+          },
           theme: appThemeController.themeMode.rawMode != ThemeMode.system
               ? lightTheme
               : generateThemeData(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
-import 'package:light_house/src/controllers/core/play_mode_controller.dart';
+import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
 import 'package:light_house/src/models/play_mode_models.dart';
 import 'package:light_house/src/screens/home/widgets/bottom_bar/components/app_theme_change_button.dart';
 import 'package:light_house/src/screens/home/widgets/bottom_bar/components/bottom_bar_middle_button.dart';
