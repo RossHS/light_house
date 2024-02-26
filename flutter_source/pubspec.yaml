@@ -19,6 +19,7 @@ dependencies:
   flutter_colorpicker: ^1.0.3
   flutter_mobx: ^2.2.0+2
   flutter_reactive_ble: ^5.3.1
+  flutter_shaders: ^0.1.2
   get_it: ^7.6.7
   hive: ^2.2.3
   hive_flutter: ^1.1.0
@@ -42,6 +43,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  shaders:
+    - assets/shaders/glitch.glsl
 
   fonts:
     - family: JetBrains Mono
