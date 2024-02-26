@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:light_house/src/utils/extension.dart';
+import 'package:light_house/src/utils/extensions.dart';
 
 /// Юнит тест расширений
 void main() {

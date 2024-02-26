@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
-import 'package:light_house/src/controllers/core/rgb_controller.dart';
+import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
 import 'package:light_house/src/screens/home/widgets/home_widgets.dart';
 import 'package:light_house/src/utils/color_names/color_names.dart';
-import 'package:light_house/src/utils/extension.dart';
+import 'package:light_house/src/utils/extensions.dart';
 import 'package:light_house/src/widgets/running_text_animation.dart';
 
 /// Домашний экран приложения, на нем все необходимая информация для управления

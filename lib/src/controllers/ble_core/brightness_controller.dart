@@ -1,7 +1,7 @@
 import 'package:get_it/get_it.dart';
-import 'package:light_house/src/controllers/core/send_data_controller.dart';
+import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
 import 'package:light_house/src/models/data_headers.dart';
-import 'package:light_house/src/utils/extension.dart';
+import 'package:light_house/src/utils/extensions.dart';
 import 'package:mobx/mobx.dart';
 
 part 'brightness_controller.g.dart';
