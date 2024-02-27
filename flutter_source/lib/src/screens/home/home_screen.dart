@@ -43,6 +43,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       body: Stack(
         children: [
@@ -66,21 +67,24 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 },
               );
             },
-            child: Center(
-              child: Observer(
-                builder: (context) {
-                  final color = GetIt.I<RGBController>().color;
-                  final closestColor = color.getColorName;
-                  return RunningTextAnimation(
-                    text: '${closestColor.colorName}\n'
-                        'Похожий - 0x${(closestColor.closestColor.value & 0xFFFFFF).uint24HexFormat}\n'
-                        'Текущий - 0x${color.red.uint8HexFormat}${color.green.uint8HexFormat}${color.blue.uint8HexFormat}',
-                    textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w100,
-                        ),
-                  );
-                },
+            child: ColoredBox(
+              color: theme.scaffoldBackgroundColor,
+              child: Center(
+                child: Observer(
+                  builder: (context) {
+                    final color = GetIt.I<RGBController>().color;
+                    final closestColor = color.getColorName;
+                    return RunningTextAnimation(
+                      text: '${closestColor.colorName}\n'
+                          'Похожий - 0x${(closestColor.closestColor.value & 0xFFFFFF).uint24HexFormat}\n'
+                          'Текущий - 0x${color.red.uint8HexFormat}${color.green.uint8HexFormat}${color.blue.uint8HexFormat}',
+                      textStyle: theme.textTheme.bodyLarge!.copyWith(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w100,
+                          ),
+                    );
+                  },
+                ),
               ),
             ),
           ),
