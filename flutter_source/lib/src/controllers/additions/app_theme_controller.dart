@@ -38,16 +38,14 @@ abstract class _AppThemeControllerBase with Store {
 
   ThemeModeExtension _parseThemeMode() {
     final themeModeValue = _prefs.getString(sp.themeModeKey);
-    if (themeModeValue == null) return ThemeModeExtension.systemLight;
+    if (themeModeValue == null) return ThemeModeExtension.light;
     final savedThemeMode = ThemeModeExtension.values.firstWhereOrNull((theme) => theme.name == themeModeValue);
-    return savedThemeMode ?? ThemeModeExtension.systemLight;
+    return savedThemeMode ?? ThemeModeExtension.light;
   }
 }
 
 /// Расширение для стандартного [ThemeMode]
 enum ThemeModeExtension {
-  systemLight(ThemeMode.system),
-  systemDark(ThemeMode.system),
   light(ThemeMode.light),
   dark(ThemeMode.dark);
 
