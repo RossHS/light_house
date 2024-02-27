@@ -26,21 +26,9 @@ class MyApp extends StatelessWidget {
         final appThemeController = GetIt.I<AppThemeController>();
         return MaterialApp(
           title: 'Light House',
-          themeMode: switch (appThemeController.themeMode) {
-            ThemeModeExtension.dark => ThemeMode.dark,
-            _ => ThemeMode.light,
-          },
-          theme: appThemeController.themeMode.rawMode != ThemeMode.system
-              ? lightTheme
-              : generateThemeData(
-                  seedColor: GetIt.I<RGBController>().color,
-                  brightness: switch (appThemeController.themeMode) {
-                    ThemeModeExtension.systemLight => Brightness.light,
-                    ThemeModeExtension.systemDark => Brightness.dark,
-                    _ => Brightness.light,
-                  },
-                ),
-          darkTheme: dartTheme,
+          themeMode: appThemeController.themeMode.rawMode,
+          theme: generateThemeData(seedColor: GetIt.I<RGBController>().color, brightness: Brightness.light),
+          darkTheme: generateThemeData(seedColor: GetIt.I<RGBController>().color, brightness: Brightness.dark),
           home: const HomeScreen(),
         );
       },

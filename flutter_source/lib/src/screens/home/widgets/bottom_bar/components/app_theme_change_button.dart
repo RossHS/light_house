@@ -19,20 +19,10 @@ class AppThemeChangeButton extends StatelessWidget {
           ThemeModeExtension.light => const Icon(
               key: ValueKey(ThemeModeExtension.light),
               Icons.light_mode,
-              color: Colors.black,
             ),
           ThemeModeExtension.dark => const Icon(
               key: ValueKey(ThemeModeExtension.dark),
               Icons.dark_mode,
-              color: Colors.white,
-            ),
-          ThemeModeExtension.systemLight => const Icon(
-              key: ValueKey(ThemeModeExtension.systemLight),
-              Icons.line_axis,
-            ),
-          ThemeModeExtension.systemDark => const Icon(
-              key: ValueKey(ThemeModeExtension.systemDark),
-              Icons.stacked_line_chart,
             ),
         };
         return IconButton(
