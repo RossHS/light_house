@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -91,6 +92,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           const Align(
             alignment: Alignment.bottomCenter,
             child: BottomBar(),
+          ),
+          const SafeArea(
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: BLEConnectionStatesIndicator(),
+            ),
           ),
         ],
       ),
