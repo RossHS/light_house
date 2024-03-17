@@ -26,59 +26,62 @@ class _BottomBarState extends State<BottomBar> {
   @override
   Widget build(BuildContext context) {
     return GlassBox(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: SizedBox(
-          height: 50,
-          child: ObjectFlyAnimation(
-            destinationGlobalKey: _destKey,
-            child: NavigationToolbar(
-              centerMiddle: true,
-              leading: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const BottomCustomPopupButton(
-                    menuWidget: LightSliders(),
-                    iconWidget: Icon(Icons.lightbulb),
-                  ),
-                  const BottomCustomPopupButton(
-                    menuWidget: LightHue(),
-                    iconWidget: Icon(Icons.palette),
-                  ),
-                  BottomBarMyColorsButton(key: _destKey),
-                ],
-              ),
-              middle: const BottomBarMiddleButton(),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const AppThemeChangeButton(),
-                  Observer(
-                    builder: (context) {
-                      final playModeController = GetIt.I<PlayModeController>();
-                      return DropdownButton<PlayModeBase>(
-                        value: playModeController.playMode,
-                        items: const [
-                          DropdownMenuItem<PlayModeBase>(
-                            value: DisabledPlayMode(),
-                            child: Text('Off'),
-                          ),
-                          DropdownMenuItem<PlayModeBase>(
-                            value: BrightnessPlayMode(),
-                            child: Text('B'),
-                          ),
-                          DropdownMenuItem<PlayModeBase>(
-                            value: ChangeColorPlayMode(),
-                            child: Text('C'),
-                          ),
-                        ],
-                        onChanged: (value) {
-                          if (value != null) playModeController.playMode = value;
-                        },
-                      );
-                    },
-                  ),
-                ],
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: SizedBox(
+            height: 50,
+            child: ObjectFlyAnimation(
+              destinationGlobalKey: _destKey,
+              child: NavigationToolbar(
+                centerMiddle: true,
+                leading: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const BottomCustomPopupButton(
+                      menuWidget: LightSliders(),
+                      iconWidget: Icon(Icons.lightbulb),
+                    ),
+                    const BottomCustomPopupButton(
+                      menuWidget: LightHue(),
+                      iconWidget: Icon(Icons.palette),
+                    ),
+                    BottomBarMyColorsButton(key: _destKey),
+                  ],
+                ),
+                middle: const BottomBarMiddleButton(),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const AppThemeChangeButton(),
+                    Observer(
+                      builder: (context) {
+                        final playModeController = GetIt.I<PlayModeController>();
+                        return DropdownButton<PlayModeBase>(
+                          value: playModeController.playMode,
+                          items: const [
+                            DropdownMenuItem<PlayModeBase>(
+                              value: DisabledPlayMode(),
+                              child: Text('Off'),
+                            ),
+                            DropdownMenuItem<PlayModeBase>(
+                              value: BrightnessPlayMode(),
+                              child: Text('B'),
+                            ),
+                            DropdownMenuItem<PlayModeBase>(
+                              value: ChangeColorPlayMode(),
+                              child: Text('C'),
+                            ),
+                          ],
+                          onChanged: (value) {
+                            if (value != null) playModeController.playMode = value;
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

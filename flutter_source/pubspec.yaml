@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  async: any
   collection: any
   material_color_utilities: any
 
@@ -34,6 +35,7 @@ dev_dependencies:
     sdk: flutter
 
   build_runner: ^2.4.8
+  flutter_launcher_icons: ^0.13.1
   mobx_codegen: ^2.6.0+1
   widgetbook_generator: ^3.7.0
 
@@ -51,3 +53,8 @@ flutter:
     - family: JetBrains Mono
       fonts:
         - asset: assets/fonts/JetBrainsMono.ttf
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/app_icon.png"
