@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  async: any
   collection: any
   material_color_utilities: any
 
