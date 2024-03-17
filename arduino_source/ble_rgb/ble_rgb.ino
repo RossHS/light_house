@@ -15,9 +15,12 @@ uint32_t tmr; // время
 
 
 void setup() {
+  delay(500);
   // Подключение bluetooth
   Serial.begin(9600);  /*Baud Rate for serial communication*/
   Serial.setTimeout(100);
+  // Небольшие задержки, дабы bluetooth успел инициализироваться по питанию
+  delay(500);
   pinMode(13, OUTPUT); 
   // включить гамма-коррекцию (по умолч. выключено)
   led.setCRT(true);

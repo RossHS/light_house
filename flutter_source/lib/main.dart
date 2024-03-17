@@ -40,6 +40,7 @@ class MyApp extends StatelessWidget {
 Future<void> _diRegisters() async {
   final prefs = await SharedPreferences.getInstance();
   GetIt.I.registerSingleton(prefs);
+  GetIt.I.registerSingleton(BLEConnectionController());
   GetIt.I.registerSingleton(SendDataController());
   GetIt.I.registerSingleton(RGBController());
   GetIt.I.registerSingleton(BrightnessController());
