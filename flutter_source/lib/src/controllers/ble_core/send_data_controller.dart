@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:get_it/get_it.dart';
 import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
-import 'package:light_house/src/models/ble_device_data_for_connection.dart';
 import 'package:light_house/src/models/data_headers.dart';
 import 'package:light_house/src/utils/logger.dart';
 import 'package:light_house/src/utils/mobx_async_value.dart';
@@ -49,7 +48,7 @@ abstract class _SendDataControllerBase with Store {
   /// при помощи него мы можем автоматически подключаться к BLE и отправлять по нему данные
   Completer<bool> _completer = Completer();
 
-  final _bleDataForConnection = BLEDeviceDataForConnection.instance;
+  final _bleDevicePresetsInitController = GetIt.I<BLEDevicePresetsInitController>();
 
   /// Структура уходящего пакета
   ///
@@ -83,8 +82,8 @@ abstract class _SendDataControllerBase with Store {
       await _bleConnectionController.ble.writeCharacteristicWithoutResponse(
         QualifiedCharacteristic(
           characteristicId: Uuid.parse('0000ffe1-0000-1000-8000-00805f9b34fb'),
-          serviceId: _bleDataForConnection.serviceId,
-          deviceId: _bleDataForConnection.deviceId,
+          serviceId: _bleDevicePresetsInitController.bleDeviceDataForConnection!.serviceId,
+          deviceId: _bleDevicePresetsInitController.bleDeviceDataForConnection!.deviceId,
         ),
         value: [
           0x23, // начало пакета

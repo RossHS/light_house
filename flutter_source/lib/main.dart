@@ -7,11 +7,13 @@ import 'package:light_house/src/controllers/additions/my_colors_controller.dart'
 import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
 import 'package:light_house/src/screens/home/home_screen.dart';
 import 'package:light_house/src/utils/app_themes.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
+  await _permissionRequest();
   await _diRegisters();
   runApp(const MyApp());
 }
@@ -39,12 +41,23 @@ class MyApp extends StatelessWidget {
 /// Регистрация данных в сервис для контроллеров через GetIt
 Future<void> _diRegisters() async {
   final prefs = await SharedPreferences.getInstance();
-  GetIt.I.registerSingleton(prefs);
-  GetIt.I.registerSingleton(BLEConnectionController());
-  GetIt.I.registerSingleton(SendDataController());
-  GetIt.I.registerSingleton(RGBController());
-  GetIt.I.registerSingleton(BrightnessController());
-  GetIt.I.registerSingleton(PlayModeController());
-  GetIt.I.registerSingleton(MyColorsController());
-  GetIt.I.registerSingleton(AppThemeController(prefs));
+  GetIt.I.registerSingleton<SharedPreferences>(prefs);
+  // BLE
+  GetIt.I.registerSingleton<BLEDevicePresetsInitController>(BLEDevicePresetsInitController());
+  GetIt.I.registerSingleton<BLEConnectionController>(BLEConnectionController());
+  GetIt.I.registerSingleton<SendDataController>(SendDataController());
+  GetIt.I.registerSingleton<RGBController>(RGBController());
+  GetIt.I.registerSingleton<BrightnessController>(BrightnessController());
+  GetIt.I.registerSingleton<PlayModeController>(PlayModeController());
+
+  // Установка вспомогательных контроллеров
+  GetIt.I.registerSingleton<MyColorsController>(MyColorsController());
+  GetIt.I.registerSingleton<AppThemeController>(AppThemeController(prefs));
+}
+
+/// Запрос разрешений для корректной работы
+/// TODO 18.03.2024 - подумать о том, чтоб вынести это все добро в отдельный контроллер!
+Future<void> _permissionRequest() async {
+  await Permission.bluetoothScan.request();
+  await Permission.bluetoothConnect.request();
 }

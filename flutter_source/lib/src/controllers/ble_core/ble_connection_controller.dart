@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:async/async.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
-import 'package:light_house/src/models/ble_device_data_for_connection.dart';
+import 'package:get_it/get_it.dart';
+import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
 import 'package:light_house/src/utils/logger.dart';
 import 'package:mobx/mobx.dart';
 
@@ -14,7 +15,7 @@ class BLEConnectionController = _BLEConnectionControllerBase with _$BLEConnectio
 /// Контроллер состояния подключения и отключения от BLE
 abstract class _BLEConnectionControllerBase with Store {
   final ble = FlutterReactiveBle();
-  final _bleDataForConnection = BLEDeviceDataForConnection.instance;
+  final _bleDevicePresetsInitController = GetIt.I<BLEDevicePresetsInitController>();
 
   /// Таймер на отключение неактивного соединения
   RestartableTimer? _timer;
@@ -44,10 +45,11 @@ abstract class _BLEConnectionControllerBase with Store {
   void resetConnectionTimeout() => _timer?.reset();
 
   /// Метод подключения к BLE
-  void connect() {
-    if (_connection != null) return;
-    logger.d('Start connection to device: ${_bleDataForConnection.deviceId}');
-    _connection = ble.connectToDevice(id: _bleDataForConnection.deviceId).listen(
+  Future<void> connect() async {
+    final bleReady = await _bleDevicePresetsInitController.bleDataInitedCompleter.future;
+    if (_connection != null || !bleReady) return;
+    logger.d('Start connection to device: ${_bleDevicePresetsInitController.bleDeviceDataForConnection?.deviceId}');
+    _connection = ble.connectToDevice(id: _bleDevicePresetsInitController.bleDeviceDataForConnection!.deviceId).listen(
           (event) => _updateState(event.connectionState),
         );
   }
@@ -55,10 +57,14 @@ abstract class _BLEConnectionControllerBase with Store {
   /// Метод разрыва соединения с BLE
   Future<void> disconnect() async {
     try {
-      logger.d('disconnecting from device: ${_bleDataForConnection.deviceId}');
+      logger.d('disconnecting from device: ${_bleDevicePresetsInitController.bleDeviceDataForConnection?.deviceId}');
       await _connection?.cancel();
     } catch (e, s) {
-      logger.e('error disconnecting from device: ${_bleDataForConnection.deviceId}', error: e, stackTrace: s);
+      logger.e(
+        'error disconnecting from device: ${_bleDevicePresetsInitController.bleDeviceDataForConnection?.deviceId}',
+        error: e,
+        stackTrace: s,
+      );
     } finally {
       _updateState(DeviceConnectionState.disconnected);
     }
