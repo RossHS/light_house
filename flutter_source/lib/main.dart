@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
@@ -58,6 +59,8 @@ Future<void> _diRegisters() async {
 /// Запрос разрешений для корректной работы
 /// TODO 18.03.2024 - подумать о том, чтоб вынести это все добро в отдельный контроллер!
 Future<void> _permissionRequest() async {
+  // Для веба данные разрешения не подходят!
+  if (kIsWeb) return;
   await Permission.bluetoothScan.request();
   await Permission.bluetoothConnect.request();
 }
