@@ -14,9 +14,7 @@ class BLEDevicePresetsInitController = _BLEDevicePresetsInitControllerBase with 
 
 /// Контроллер поиска и установок настроек необходимых для подключения в BLE
 abstract class _BLEDevicePresetsInitControllerBase with Store {
-  _BLEDevicePresetsInitControllerBase() {
-    _initBleSettings();
-  }
+  _BLEDevicePresetsInitControllerBase();
 
   final _sp = GetIt.I<SharedPreferences>();
 
@@ -40,7 +38,7 @@ abstract class _BLEDevicePresetsInitControllerBase with Store {
   /// да, я понимаю, что система имеет кучу пробелом, но я стремлюсь за минимумом кода и
   /// большим удобством пользователя
   /// где подключение осуществляется автоматически
-  Future<void> _initBleSettings() async {
+  Future<void> initBleSettings() async {
     if (bleDataInitedCompleter.isCompleted) throw Exception('Incorrect controller states');
 
     if (_sp.containsKey(bleDeviceIdKey) && _sp.containsKey(bleServiceIdKey)) {

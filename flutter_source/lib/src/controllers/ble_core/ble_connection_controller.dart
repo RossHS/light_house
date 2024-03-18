@@ -46,6 +46,9 @@ abstract class _BLEConnectionControllerBase with Store {
 
   /// Метод подключения к BLE
   Future<void> connect() async {
+    if (!_bleDevicePresetsInitController.bleDataInitedCompleter.isCompleted) {
+      _bleDevicePresetsInitController.initBleSettings();
+    }
     final bleReady = await _bleDevicePresetsInitController.bleDataInitedCompleter.future;
     if (_connection != null || !bleReady) return;
     logger.d('Start connection to device: ${_bleDevicePresetsInitController.bleDeviceDataForConnection?.deviceId}');
