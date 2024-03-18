@@ -3,6 +3,7 @@ import 'package:async/async.dart';
 
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:get_it/get_it.dart';
+import 'package:light_house/src/utils/logger.dart';
 import 'package:light_house/src/utils/sp_keys.dart';
 import 'package:mobx/mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -53,6 +54,7 @@ abstract class _BLEDevicePresetsInitControllerBase with Store {
     _setTimer();
     _listener = FlutterReactiveBle().scanForDevices(withServices: []).listen((event) {
       if (event.name == 'HMSoft') {
+        logger.d('correct device found - $event');
         _timer?.cancel();
         _listener?.cancel();
         final deviceId = event.id;
@@ -71,6 +73,9 @@ abstract class _BLEDevicePresetsInitControllerBase with Store {
   void _setTimer() {
     // Отмена предыдущего таймера, если он есть
     _timer?.cancel();
-    _timer = RestartableTimer(const Duration(seconds: 5), () => _listener?.cancel());
+    _timer = RestartableTimer(const Duration(seconds: 5), () {
+      logger.w('correct device not founded 💩');
+      return _listener?.cancel();
+    });
   }
 }
