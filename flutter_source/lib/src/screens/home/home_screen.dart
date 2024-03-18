@@ -92,6 +92,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             alignment: Alignment.bottomCenter,
             child: BottomBar(),
           ),
+          const SafeArea(
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: BLEConnectionStatesIndicator(),
+            ),
+          ),
         ],
       ),
     );
