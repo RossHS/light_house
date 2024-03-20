@@ -26,6 +26,7 @@ class _BottomBarState extends State<BottomBar> {
   @override
   Widget build(BuildContext context) {
     return GlassBox(
+      boxBorderSides: const BoxBorderSides(top: true),
       child: SafeArea(
         top: false,
         child: Padding(

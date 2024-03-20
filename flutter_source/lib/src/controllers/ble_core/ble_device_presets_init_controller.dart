@@ -16,7 +16,9 @@ class BLEDevicePresetsInitController = _BLEDevicePresetsInitControllerBase with 
 
 /// Контроллер поиска и установок настроек необходимых для подключения в BLE
 abstract class _BLEDevicePresetsInitControllerBase with Store {
-  _BLEDevicePresetsInitControllerBase();
+  _BLEDevicePresetsInitControllerBase() {
+    _searchSPForData();
+  }
 
   final _sp = GetIt.I<SharedPreferences>();
 
