@@ -82,8 +82,8 @@ abstract class _SendDataControllerBase with Store {
       await _bleConnectionController.ble.writeCharacteristicWithoutResponse(
         QualifiedCharacteristic(
           characteristicId: Uuid.parse('0000ffe1-0000-1000-8000-00805f9b34fb'),
-          serviceId: _bleDevicePresetsInitController.bleDeviceDataForConnection!.serviceId,
-          deviceId: _bleDevicePresetsInitController.bleDeviceDataForConnection!.deviceId,
+          serviceId: _bleDevicePresetsInitController.bleDeviceDataForConnection.value!.serviceId,
+          deviceId: _bleDevicePresetsInitController.bleDeviceDataForConnection.value!.deviceId,
         ),
         value: [
           0x23, // начало пакета
