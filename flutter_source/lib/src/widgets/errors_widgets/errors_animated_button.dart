@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:light_house/src/widgets/glass_box.dart';
 
-/// Элемент ошибки, может быть как кнопкой, так и обычной плашкой с информацией
-class ErrorForList extends StatefulWidget {
-  const ErrorForList({
+/// Элемент ошибки в виде кнопки
+class ErrorsAnimatedButton extends StatefulWidget {
+  const ErrorsAnimatedButton({
     super.key,
-    required this.text,
     this.onPressed,
+    required this.child,
   });
 
-  final String text;
   final VoidCallback? onPressed;
+  final Widget child;
 
   @override
-  State<ErrorForList> createState() => _ErrorForListState();
+  State<ErrorsAnimatedButton> createState() => _ErrorsAnimatedButtonState();
 }
 
-class _ErrorForListState extends State<ErrorForList> with SingleTickerProviderStateMixin {
+class _ErrorsAnimatedButtonState extends State<ErrorsAnimatedButton> with SingleTickerProviderStateMixin {
   late final AnimationController _animationController;
   late Animation<Offset> _offsetAnimation;
 
@@ -43,7 +42,7 @@ class _ErrorForListState extends State<ErrorForList> with SingleTickerProviderSt
   }
 
   @override
-  void didUpdateWidget(covariant ErrorForList oldWidget) {
+  void didUpdateWidget(covariant ErrorsAnimatedButton oldWidget) {
     super.didUpdateWidget(oldWidget);
     // Подводим текущую анимацию по состоянию доступности нажатия кнопки
     if (oldWidget.onPressed == null && _isSelectable) {
@@ -66,11 +65,7 @@ class _ErrorForListState extends State<ErrorForList> with SingleTickerProviderSt
     return RepaintBoundary(
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(
-            color: Colors.black,
-            width: 0.5,
-          ),
+          color: colorScheme.onSurface,
         ),
         child: AnimatedBuilder(
           animation: _animationController,
@@ -85,18 +80,7 @@ class _ErrorForListState extends State<ErrorForList> with SingleTickerProviderSt
             onTapCancel: _onTapUp,
             onTapDown: widget.onPressed != null ? _onTapDown : null,
             onTapUp: (_) => widget.onPressed != null ? _onTapUp() : null,
-            child: GlassBox(
-              glassColor: colorScheme.error,
-              opacity: 1,
-              boxBorderSides: const BoxBorderSides.all(),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  widget.text,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
+            child: widget.child,
           ),
         ),
       ),
@@ -113,4 +97,3 @@ class _ErrorForListState extends State<ErrorForList> with SingleTickerProviderSt
     _animationController.reverse();
   }
 }
-
