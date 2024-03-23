@@ -138,6 +138,7 @@ class ObjectFlyAnimationState extends State<ObjectFlyAnimation> with SingleTicke
   void _hideOverlay() {
     if (_overlayEntry == null) return;
     _overlayEntry?.remove();
+    _overlayEntry?.dispose();
     _overlayEntry = null;
     objectFlyingNotifier.value = ObjectFlyingStates.ended;
   }

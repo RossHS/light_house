@@ -101,12 +101,19 @@ final directories = <_i1.WidgetbookNode>[
         name: 'errors_widgets',
         children: [
           _i1.WidgetbookLeafComponent(
+            name: 'ErrorsAnimatedList',
+            useCase: _i1.WidgetbookUseCase(
+              name: 'ErrorsAnimatedList use case',
+              builder: _i10.errorsAnimatedListUseCase,
+            ),
+          ),
+          _i1.WidgetbookLeafComponent(
             name: 'ErrorsNotification',
             useCase: _i1.WidgetbookUseCase(
               name: 'ErrorsNotification use case',
               builder: _i10.errorsNotificationUseCase,
             ),
-          )
+          ),
         ],
       ),
     ],
