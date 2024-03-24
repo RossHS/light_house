@@ -9,6 +9,7 @@ import 'package:get_it/get_it.dart';
 import 'package:light_house/main.dart' as main;
 import 'package:light_house/src/controllers/additions/logs_store_controller.dart';
 import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
+import 'package:light_house/src/models/log_message_model.dart';
 import 'package:light_house/src/widgets/errors_widgets/errors_widgets.dart';
 import 'package:mobx/mobx.dart';
 
@@ -102,6 +103,8 @@ class _AnimatedAppErrorsListState extends State<AnimatedAppErrorsList> {
       (logsList) {
         if (!mounted) return;
         final log = logsList.last;
+        if (log.level != MessageLevel.error && log.level != MessageLevel.warning) return;
+
         final key = ObjectKey(log.msg + Random().nextInt(100000).toString());
         setState(() {
           _additionsErrors.add(
@@ -110,7 +113,10 @@ class _AnimatedAppErrorsListState extends State<AnimatedAppErrorsList> {
               padding: _padding,
               child: ErrorsNotification.text(
                 child: _ErrorsSizeConstrains.text(
-                  child: Text(logsList.last.msg, textAlign: TextAlign.left,),
+                  child: Text(
+                    logsList.last.msg,
+                    textAlign: TextAlign.left,
+                  ),
                 ),
               ),
             ),

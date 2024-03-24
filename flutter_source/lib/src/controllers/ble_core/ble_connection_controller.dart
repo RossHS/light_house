@@ -55,9 +55,11 @@ abstract class _BLEConnectionControllerBase with Store {
     _connection = ble
         .connectToDevice(
           id: _blePresetsController.bleDeviceDataForConnection.value!.deviceId,
+          connectionTimeout: const Duration(seconds: 5),
         )
         .listen(
           (event) => _updateState(event.connectionState),
+          onDone: () => logger.w('Не удалось подключиться к устройству!'),
         );
   }
 

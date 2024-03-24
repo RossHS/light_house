@@ -54,11 +54,11 @@ class InitCallbacks {
   // ignore: library_private_types_in_public_api
   static void trackFlutterErrors(_LogsStoreControllerBase logsStoreController) {
     FlutterError.onError = (errorDetails) {
-      logsStoreController.addLog(LogMessage.error('ERROR 🔥!\n${errorDetails.toString()}', stackTrace: errorDetails.stack));
+      logsStoreController.addLog(LogMessage.error(errorDetails.toString(), stackTrace: errorDetails.stack));
     };
 
     PlatformDispatcher.instance.onError = (error, stack) {
-      logsStoreController.addLog(LogMessage.error('ERROR 🔥!\n${error.toString()}', stackTrace: stack));
+      logsStoreController.addLog(LogMessage.error(error.toString(), stackTrace: stack));
       return true;
     };
   }
