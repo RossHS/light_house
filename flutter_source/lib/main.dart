@@ -42,8 +42,15 @@ class MyApp extends StatelessWidget {
 
 /// Регистрация данных в сервис для контроллеров через GetIt
 Future<void> _diRegisters() async {
-  // Регистрация хранилища логов
-  GetIt.I.registerSingleton<LogsStoreController>(LogsStoreController());
+  // Регистрация хранилища логов.
+  GetIt.I.registerSingleton<LogsStoreController>(
+    LogsStoreController(
+      initCallback: (controller) {
+        InitCallbacks.connectControllerToLogger(controller);
+        InitCallbacks.trackFlutterErrors(controller);
+      },
+    ),
+  );
 
   final prefs = await SharedPreferences.getInstance();
   GetIt.I.registerSingleton<SharedPreferences>(prefs);

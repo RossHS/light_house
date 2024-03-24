@@ -110,14 +110,14 @@ class _AnimatedAppErrorsListState extends State<AnimatedAppErrorsList> {
               padding: _padding,
               child: ErrorsNotification.text(
                 child: _ErrorsSizeConstrains.text(
-                  child: Text(logsList.last.msg),
+                  child: Text(logsList.last.msg, textAlign: TextAlign.left,),
                 ),
               ),
             ),
           );
         });
         RestartableTimer(
-          const Duration(seconds: 5),
+          const Duration(seconds: 10),
           () {
             if (!mounted) return;
             setState(() {
@@ -144,6 +144,7 @@ class _AnimatedAppErrorsListState extends State<AnimatedAppErrorsList> {
       constraints: BoxConstraints.tightFor(width: mq.size.width / 2),
       child: RepaintBoundary(
         child: ErrorsAnimatedList(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
           children: [
             _bleStatusWidget,
             _bleDeviceInfoWidget,

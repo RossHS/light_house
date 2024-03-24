@@ -74,7 +74,7 @@ abstract class _BLEDevicePresetsInitControllerBase with Store {
     // Отмена предыдущего таймера, если он есть
     _timer?.cancel();
     _timer = RestartableTimer(const Duration(seconds: 5), () {
-      logger.w('correct device not founded 💩');
+      logger.w('Не удалось найти необходимое BLE Устройство. Возможно оно выключено! 💩');
       bleDeviceDataForConnection = const AsyncValue.error(
         error: AsyncError(errorMessage: 'Устройство не найдено'),
       );

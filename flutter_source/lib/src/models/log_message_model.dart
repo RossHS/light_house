@@ -7,31 +7,67 @@ import 'package:flutter/foundation.dart';
 /// [stackTrace] - возможный стек вызова на случай ошибки
 @immutable
 class LogMessage {
-  const LogMessage({required this.level, required this.msg, required this.stackTrace});
+  LogMessage({
+    required this.level,
+    required this.msg,
+    required this.stackTrace,
+    DateTime? time,
+  }) : time = time ?? DateTime.now();
 
-  const LogMessage.info(
-    this.msg,
-  )   : level = MessageLevel.info,
-        stackTrace = null;
+  factory LogMessage.info(
+    String msg, {
+    DateTime? time,
+  }) {
+    return LogMessage(
+      level: MessageLevel.info,
+      msg: msg,
+      time: time,
+      stackTrace: null,
+    );
+  }
 
-  const LogMessage.debug(
-    this.msg,
-  )   : level = MessageLevel.debug,
-        stackTrace = null;
+  factory LogMessage.debug(
+    String msg, {
+    DateTime? time,
+  }) {
+    return LogMessage(
+      level: MessageLevel.debug,
+      msg: msg,
+      time: time,
+      stackTrace: null,
+    );
+  }
 
-  const LogMessage.error(
-    this.msg, {
-    this.stackTrace,
-  }) : level = MessageLevel.error;
+  factory LogMessage.error(
+    String msg, {
+    DateTime? time,
+    StackTrace? stackTrace,
+  }) {
+    return LogMessage(
+      level: MessageLevel.error,
+      msg: msg,
+      time: time,
+      stackTrace: stackTrace,
+    );
+  }
 
-  const LogMessage.warning(
-    this.msg, {
-    this.stackTrace,
-  }) : level = MessageLevel.warning;
+  factory LogMessage.warning(
+    String msg, {
+    DateTime? time,
+    StackTrace? stackTrace,
+  }) {
+    return LogMessage(
+      level: MessageLevel.warning,
+      msg: msg,
+      time: time,
+      stackTrace: stackTrace,
+    );
+  }
 
   final MessageLevel level;
   final String msg;
   final StackTrace? stackTrace;
+  final DateTime time;
 }
 
 /// Уровни логов

@@ -5,8 +5,13 @@ import 'package:flutter/material.dart';
 /// для корректно работы крайне важно передавать ключи [Key] в виджетах [children],
 /// без них возможны различные баги
 class ErrorsAnimatedList extends StatefulWidget {
-  const ErrorsAnimatedList({super.key, required this.children});
+  const ErrorsAnimatedList({
+    super.key,
+    this.padding,
+    required this.children,
+  });
 
+  final EdgeInsetsGeometry? padding;
   final List<Widget> children;
 
   @override
@@ -52,6 +57,7 @@ class _ErrorsAnimatedListState extends State<ErrorsAnimatedList> {
   @override
   Widget build(BuildContext context) {
     return AnimatedList(
+      padding: widget.padding,
       clipBehavior: Clip.none,
       key: _listKey,
       initialItemCount: _localChildren.length,
