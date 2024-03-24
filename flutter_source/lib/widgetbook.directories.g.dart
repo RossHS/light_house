@@ -12,6 +12,8 @@
 import 'package:light_house/src/screens/home/widgets/ble_connection_states_indicator.dart'
     as _i2;
 import 'package:light_house/src/widgets/delete_item_widget.dart' as _i3;
+import 'package:light_house/src/widgets/errors_widgets/errors_animated_widgetbook.dart'
+    as _i10;
 import 'package:light_house/src/widgets/glass_box.dart' as _i4;
 import 'package:light_house/src/widgets/light_bubble.dart' as _i5;
 import 'package:light_house/src/widgets/object_fly_animation.dart' as _i6;
@@ -94,6 +96,25 @@ final directories = <_i1.WidgetbookNode>[
           name: 'ShakeJumpAnimation use case',
           builder: _i9.shakeJumpAnimationUseCase,
         ),
+      ),
+      _i1.WidgetbookFolder(
+        name: 'errors_widgets',
+        children: [
+          _i1.WidgetbookLeafComponent(
+            name: 'ErrorsAnimatedList',
+            useCase: _i1.WidgetbookUseCase(
+              name: 'ErrorsAnimatedList use case',
+              builder: _i10.errorsAnimatedListUseCase,
+            ),
+          ),
+          _i1.WidgetbookLeafComponent(
+            name: 'ErrorsNotification',
+            useCase: _i1.WidgetbookUseCase(
+              name: 'ErrorsNotification use case',
+              builder: _i10.errorsNotificationUseCase,
+            ),
+          ),
+        ],
       ),
     ],
   ),

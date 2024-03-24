@@ -16,7 +16,7 @@ final lightTheme = ThemeData(
     secondaryContainer: _lSecondary,
     surface: _lBackground,
     background: _lBackground,
-    error: Color(0xFFB00020),
+    error: Colors.redAccent,
     // Цвет текста на основном цвете
     onPrimary: Colors.black,
     // Цвет текста на вторичном цвете
@@ -44,7 +44,7 @@ final dartTheme = ThemeData(
     secondaryContainer: _dSecondary,
     surface: _dBackground,
     background: _dBackground,
-    error: Color(0xFFB00020),
+    error: Colors.redAccent,
     onPrimary: Colors.white,
     onSecondary: Colors.black,
     onSurface: Colors.white,
@@ -64,6 +64,7 @@ ThemeData generateThemeData({required Color seedColor, required Brightness brigh
     colorScheme: ColorScheme.fromSeed(
       seedColor: seedColor,
       brightness: brightness,
+      error: Colors.redAccent,
       background: Color(brightness == Brightness.light ? palette.primary.get(90) : palette.neutral.get(20)),
     ),
   );

@@ -3,6 +3,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
+import 'package:light_house/src/screens/home/widgets/animated_app_errors_list.dart';
 import 'package:light_house/src/screens/home/widgets/home_widgets.dart';
 import 'package:light_house/src/utils/color_names/color_names.dart';
 import 'package:light_house/src/utils/extensions.dart';
@@ -86,6 +87,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   },
                 ),
               ),
+            ),
+          ),
+          const SafeArea(
+            child: Align(
+              alignment: Alignment.topRight,
+              child: AnimatedAppErrorsList(),
             ),
           ),
           const Align(
