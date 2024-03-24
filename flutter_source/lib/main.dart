@@ -4,6 +4,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:light_house/src/controllers/additions/app_theme_controller.dart';
+import 'package:light_house/src/controllers/additions/logs_store_controller.dart';
 import 'package:light_house/src/controllers/additions/my_colors_controller.dart';
 import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
 import 'package:light_house/src/screens/home/home_screen.dart';
@@ -14,7 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  await _permissionRequest();
+  await permissionRequest();
   await _diRegisters();
   runApp(const MyApp());
 }
@@ -41,6 +42,16 @@ class MyApp extends StatelessWidget {
 
 /// Регистрация данных в сервис для контроллеров через GetIt
 Future<void> _diRegisters() async {
+  // Регистрация хранилища логов.
+  GetIt.I.registerSingleton<LogsStoreController>(
+    LogsStoreController(
+      initCallback: (controller) {
+        InitCallbacks.connectControllerToLogger(controller);
+        InitCallbacks.trackFlutterErrors(controller);
+      },
+    ),
+  );
+
   final prefs = await SharedPreferences.getInstance();
   GetIt.I.registerSingleton<SharedPreferences>(prefs);
   // BLE
@@ -58,7 +69,7 @@ Future<void> _diRegisters() async {
 
 /// Запрос разрешений для корректной работы
 /// TODO 18.03.2024 - подумать о том, чтоб вынести это все добро в отдельный контроллер!
-Future<void> _permissionRequest() async {
+Future<void> permissionRequest() async {
   // Для веба данные разрешения не подходят!
   if (kIsWeb) return;
   await Permission.bluetoothScan.request();

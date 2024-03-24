@@ -15,17 +15,36 @@ mixin _$BLEDevicePresetsInitController
       context: context);
 
   @override
-  ({String deviceId, Uuid serviceId})? get bleDeviceDataForConnection {
+  AsyncValue<({String deviceId, Uuid serviceId})>
+      get bleDeviceDataForConnection {
     _$bleDeviceDataForConnectionAtom.reportRead();
     return super.bleDeviceDataForConnection;
   }
 
   @override
-  set bleDeviceDataForConnection(({String deviceId, Uuid serviceId})? value) {
+  set bleDeviceDataForConnection(
+      AsyncValue<({String deviceId, Uuid serviceId})> value) {
     _$bleDeviceDataForConnectionAtom
         .reportWrite(value, super.bleDeviceDataForConnection, () {
       super.bleDeviceDataForConnection = value;
     });
+  }
+
+  late final _$_BLEDevicePresetsInitControllerBaseActionController =
+      ActionController(
+          name: '_BLEDevicePresetsInitControllerBase', context: context);
+
+  @override
+  bool _searchSPForData() {
+    final _$actionInfo =
+        _$_BLEDevicePresetsInitControllerBaseActionController.startAction(
+            name: '_BLEDevicePresetsInitControllerBase._searchSPForData');
+    try {
+      return super._searchSPForData();
+    } finally {
+      _$_BLEDevicePresetsInitControllerBaseActionController
+          .endAction(_$actionInfo);
+    }
   }
 
   @override
