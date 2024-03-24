@@ -4,6 +4,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:light_house/src/controllers/additions/app_theme_controller.dart';
+import 'package:light_house/src/controllers/additions/logs_store_controller.dart';
 import 'package:light_house/src/controllers/additions/my_colors_controller.dart';
 import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
 import 'package:light_house/src/screens/home/home_screen.dart';
@@ -41,6 +42,9 @@ class MyApp extends StatelessWidget {
 
 /// Регистрация данных в сервис для контроллеров через GetIt
 Future<void> _diRegisters() async {
+  // Регистрация хранилища логов
+  GetIt.I.registerSingleton<LogsStoreController>(LogsStoreController());
+
   final prefs = await SharedPreferences.getInstance();
   GetIt.I.registerSingleton<SharedPreferences>(prefs);
   // BLE
