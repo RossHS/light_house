@@ -7,47 +7,47 @@ import 'package:light_house/src/widgets/glass_box.dart';
 class ErrorsNotification extends StatelessWidget {
   const ErrorsNotification({
     super.key,
-    required this.text,
     required this.isButton,
     this.onPressed,
+    required this.child,
   });
 
   const ErrorsNotification.text({
     super.key,
-    required this.text,
+    required this.child,
   })  : isButton = false,
         onPressed = null;
 
   const ErrorsNotification.button({
     super.key,
-    required this.text,
+    required this.child,
     required this.onPressed,
   }) : isButton = true;
 
-  final String text;
   final bool isButton;
   final VoidCallback? onPressed;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final child = GlassBox(
-      glassColor: colorScheme.error,
+    final theme = Theme.of(context);
+    final body = GlassBox(
+      glassColor: theme.colorScheme.error,
       opacity: 1,
-      boxBorderSides: const BoxBorderSides.all(),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Text(
-          text,
+        child: DefaultTextStyle(
           textAlign: TextAlign.center,
+          style: theme.textTheme.bodyMedium!,
+          child: child,
         ),
       ),
     );
     return isButton
         ? ErrorsAnimatedButton(
             onPressed: onPressed,
-            child: child,
+            child: body,
           )
-        : child;
+        : body;
   }
 }

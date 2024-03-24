@@ -32,12 +32,12 @@ class _ErrorsNotificationWidgetbookTestState extends State<_ErrorsNotificationWi
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ErrorsNotification.text(text: 'text ${widget.text}'),
+        ErrorsNotification.text(child: Text('text ${widget.text}')),
         const SizedBox(height: 20),
         ErrorsNotification.button(
-          text: 'button ${widget.text}',
           // ignore: avoid_print
           onPressed: _isTappable ? () => print('pressed') : null,
+          child: Text('button ${widget.text}'),
         ),
         const SizedBox(height: 20),
         Switch(
@@ -62,9 +62,9 @@ class _ErrorsAnimatedListWidgetbookTest extends StatefulWidget {
 
 class _ErrorsAnimatedListWidgetbookTestState extends State<_ErrorsAnimatedListWidgetbookTest> {
   final _errorsList = <Widget>[
-    const ErrorsNotification.text(key: ValueKey('presets ${1}'), text: '1 - random error'),
-    const ErrorsNotification.text(key: ValueKey('presets ${2}'), text: '2 - random error'),
-    const ErrorsNotification.text(key: ValueKey('presets ${3}'), text: '3 - random error'),
+    const ErrorsNotification.text(key: ValueKey('presets ${1}'), child: Text('1 - random error')),
+    const ErrorsNotification.text(key: ValueKey('presets ${2}'), child: Text('2 - random error')),
+    const ErrorsNotification.text(key: ValueKey('presets ${3}'), child: Text('3 - random error')),
   ];
 
   final _rnd = math.Random();
@@ -124,7 +124,7 @@ class _ErrorsAnimatedListWidgetbookTestState extends State<_ErrorsAnimatedListWi
     setState(
       () => _errorsList.insert(
         index,
-        ErrorsNotification.text(key: ValueKey(key), text: '$index - random error. key - $key'),
+        ErrorsNotification.text(key: ValueKey(key), child: Text('$index - random error. key - $key')),
       ),
     );
   }
@@ -139,7 +139,7 @@ class _ErrorsAnimatedListWidgetbookTestState extends State<_ErrorsAnimatedListWi
       print('added.Index: $index. Text: $index - random error. key - $key');
       _errorsList.insert(
         index,
-        ErrorsNotification.text(key: ValueKey(key), text: '$index - random error. key - $key'),
+        ErrorsNotification.text(key: ValueKey(key), child: Text('$index - random error. key - $key')),
       );
     }
     setState(() {});
@@ -153,7 +153,7 @@ class _ErrorsAnimatedListWidgetbookTestState extends State<_ErrorsAnimatedListWi
     setState(
       () => _errorsList.insert(
         index,
-        ErrorsNotification.text(key: ValueKey(key), text: '$index - random error. key - $key. With timer'),
+        ErrorsNotification.text(key: ValueKey(key), child: Text('$index - random error. key - $key. With timer')),
       ),
     );
     RestartableTimer(

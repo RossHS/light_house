@@ -14,7 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  await _permissionRequest();
+  await permissionRequest();
   await _diRegisters();
   runApp(const MyApp());
 }
@@ -58,7 +58,7 @@ Future<void> _diRegisters() async {
 
 /// Запрос разрешений для корректной работы
 /// TODO 18.03.2024 - подумать о том, чтоб вынести это все добро в отдельный контроллер!
-Future<void> _permissionRequest() async {
+Future<void> permissionRequest() async {
   // Для веба данные разрешения не подходят!
   if (kIsWeb) return;
   await Permission.bluetoothScan.request();

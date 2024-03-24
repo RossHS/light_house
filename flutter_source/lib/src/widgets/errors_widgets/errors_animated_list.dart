@@ -52,9 +52,9 @@ class _ErrorsAnimatedListState extends State<ErrorsAnimatedList> {
   @override
   Widget build(BuildContext context) {
     return AnimatedList(
+      clipBehavior: Clip.none,
       key: _listKey,
       initialItemCount: _localChildren.length,
-      padding: const EdgeInsets.all(8),
       itemBuilder: _addIt,
     );
   }

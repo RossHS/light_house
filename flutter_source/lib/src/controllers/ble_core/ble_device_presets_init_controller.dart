@@ -48,7 +48,6 @@ abstract class _BLEDevicePresetsInitControllerBase with Store {
 
     if (_searchSPForData()) return;
     bleDeviceDataForConnection = const AsyncValue.loading();
-
     _setTimer();
     _listener = FlutterReactiveBle().scanForDevices(withServices: []).listen((event) {
       if (event.name == 'HMSoft') {
@@ -77,7 +76,7 @@ abstract class _BLEDevicePresetsInitControllerBase with Store {
     _timer = RestartableTimer(const Duration(seconds: 5), () {
       logger.w('correct device not founded 💩');
       bleDeviceDataForConnection = const AsyncValue.error(
-        error: AsyncError(errorMessage: 'correct device not founded'),
+        error: AsyncError(errorMessage: 'Устройство не найдено'),
       );
       bleDataInitedCompleter.complete(false);
       bleDataInitedCompleter = Completer();
