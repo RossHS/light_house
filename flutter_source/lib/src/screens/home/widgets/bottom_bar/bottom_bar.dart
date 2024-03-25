@@ -8,7 +8,6 @@ import 'package:light_house/src/screens/home/widgets/bottom_bar/components/botto
 import 'package:light_house/src/screens/home/widgets/bottom_bar/components/bottom_bar_mycolor_button.dart';
 import 'package:light_house/src/screens/home/widgets/bottom_bar/components/bottom_custom_popup_button.dart';
 import 'package:light_house/src/screens/home/widgets/bottom_bar/components/light_hue.dart';
-import 'package:light_house/src/screens/home/widgets/bottom_bar/components/light_sliders.dart';
 import 'package:light_house/src/widgets/glass_box.dart';
 import 'package:light_house/src/widgets/object_fly_animation.dart';
 
@@ -40,10 +39,6 @@ class _BottomBarState extends State<BottomBar> {
                 leading: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const BottomCustomPopupButton(
-                      menuWidget: LightSliders(),
-                      iconWidget: Icon(Icons.lightbulb),
-                    ),
                     const BottomCustomPopupButton(
                       menuWidget: LightHue(),
                       iconWidget: Icon(Icons.palette),
