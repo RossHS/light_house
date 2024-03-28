@@ -4,7 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:light_house/src/controllers/additions/logs_store_controller.dart';
 import 'package:light_house/src/controllers/additions/settings_controller.dart';
 
-/// Экран с выводом логов приложения [SettingsController]
+/// Экран с выводом логов приложения из [SettingsController]
 class LogsScreen extends StatelessWidget {
   const LogsScreen({super.key});
 
@@ -16,8 +16,16 @@ class LogsScreen extends StatelessWidget {
   }
 }
 
-class _Body extends StatelessWidget {
-  const _Body({super.key});
+class _Body extends StatefulWidget {
+  const _Body();
+
+  @override
+  State<_Body> createState() => _BodyState();
+}
+
+class _BodyState extends State<_Body> {
+
+
 
   @override
   Widget build(BuildContext context) {

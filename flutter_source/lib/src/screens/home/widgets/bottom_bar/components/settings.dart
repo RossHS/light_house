@@ -22,19 +22,12 @@ class Settings extends StatelessWidget {
               value: controller.glitchOn,
               onChanged: (value) => controller.glitchOn = value,
             ),
-            // TODO 28.03.2024 - допилить
             TextButton.icon(
-              onPressed: () {
-                Navigator.of(context, rootNavigator: true).push(
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return LogsScreen();
-                    },
-                  ),
-                );
-              },
-              icon: Icon(Icons.note),
-              label: Text('Логи'),
+              onPressed: () => Navigator.of(context, rootNavigator: true).push(
+                MaterialPageRoute(builder: (context) => const LogsScreen()),
+              ),
+              icon: const Icon(Icons.note),
+              label: const Text('Логи'),
             ),
           ],
         );
