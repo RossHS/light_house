@@ -3,11 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
 import 'package:light_house/src/models/play_mode_models.dart';
-import 'package:light_house/src/screens/home/widgets/bottom_bar/components/app_theme_change_button.dart';
-import 'package:light_house/src/screens/home/widgets/bottom_bar/components/bottom_bar_middle_button.dart';
-import 'package:light_house/src/screens/home/widgets/bottom_bar/components/bottom_bar_mycolor_button.dart';
-import 'package:light_house/src/screens/home/widgets/bottom_bar/components/bottom_custom_popup_button.dart';
-import 'package:light_house/src/screens/home/widgets/bottom_bar/components/light_hue.dart';
+import 'package:light_house/src/screens/home/widgets/bottom_bar/bottom_bar_components.dart';
 import 'package:light_house/src/widgets/glass_box.dart';
 import 'package:light_house/src/widgets/object_fly_animation.dart';
 
@@ -39,6 +35,10 @@ class _BottomBarState extends State<BottomBar> {
                 leading: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    const BottomCustomPopupButton(
+                      menuWidget: Settings(),
+                      iconWidget: Icon(Icons.settings),
+                    ),
                     const BottomCustomPopupButton(
                       menuWidget: LightHue(),
                       iconWidget: Icon(Icons.palette),

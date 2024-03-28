@@ -6,6 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:light_house/src/controllers/additions/app_theme_controller.dart';
 import 'package:light_house/src/controllers/additions/logs_store_controller.dart';
 import 'package:light_house/src/controllers/additions/my_colors_controller.dart';
+import 'package:light_house/src/controllers/additions/settings_controller.dart';
 import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
 import 'package:light_house/src/screens/home/home_screen.dart';
 import 'package:light_house/src/utils/app_themes.dart';
@@ -65,6 +66,7 @@ Future<void> _diRegisters() async {
   // Установка вспомогательных контроллеров
   GetIt.I.registerSingleton<MyColorsController>(MyColorsController());
   GetIt.I.registerSingleton<AppThemeController>(AppThemeController(prefs));
+  GetIt.I.registerSingleton<SettingsController>(SettingsController(prefs));
 }
 
 /// Запрос разрешений для корректной работы
