@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
@@ -21,7 +22,6 @@ class AnimatedButton extends StatefulWidget {
 
 class _AnimatedButtonState extends State<AnimatedButton>
     with SingleTickerProviderStateMixin, _AnimatedButtonStateMixin {
-
   bool get _isSelected => widget.onPressed != null;
 
   @override
@@ -172,7 +172,12 @@ mixin _AnimatedButtonStateMixin<T extends StatefulWidget> on State<T>, SingleTic
               );
             },
             child: GestureDetector(
-              onTap: _onPressed,
+              onTap: _onPressed == null
+                  ? null
+                  : () {
+                      HapticFeedback.heavyImpact();
+                      _onPressed!.call();
+                    },
               onTapCancel: _onTapUp,
               onTapDown: _onPressed != null ? _onTapDown : null,
               onTapUp: (_) => _onPressed != null ? _onTapUp() : null,
