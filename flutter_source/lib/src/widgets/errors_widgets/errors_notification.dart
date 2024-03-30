@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:light_house/src/widgets/errors_widgets/errors_widgets.dart';
+import 'package:light_house/src/widgets/animated_button.dart';
 import 'package:light_house/src/widgets/glass_box.dart';
 
 /// Плашка с текстом об ошибки, может быть как просто текстом, так и анимированной кнопкой
@@ -31,7 +31,14 @@ class ErrorsNotification extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final body = GlassBox(
+    if (isButton){
+      return AnimatedButton(
+        color: theme.colorScheme.error,
+        onPressed: onPressed,
+        child: child,
+      );
+    }
+    return GlassBox(
       glassColor: theme.colorScheme.error,
       opacity: 1,
       child: Padding(
@@ -43,11 +50,5 @@ class ErrorsNotification extends StatelessWidget {
         ),
       ),
     );
-    return isButton
-        ? ErrorsAnimatedButton(
-            onPressed: onPressed,
-            child: body,
-          )
-        : body;
   }
 }
