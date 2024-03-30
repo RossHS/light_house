@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:light_house/src/models/log_message_model.dart';
+import 'package:light_house/src/screens/logs/widgets/logs_widgets.dart';
 import 'package:light_house/src/widgets/animated_button.dart';
 
 class FiltersBar extends StatelessWidget {
@@ -52,12 +53,9 @@ class FiltersBar extends StatelessWidget {
             alignment: Alignment.topLeft,
             child: BackButton(),
           ),
-          Align(
+          const Align(
             alignment: Alignment.topRight,
-            child: IconButton(
-              onPressed: logsShare,
-              icon: const Icon(Icons.share),
-            ),
+            child: LogsShareButton(),
           ),
         ],
       ),
