@@ -68,6 +68,33 @@ class LogMessage {
   final String msg;
   final StackTrace? stackTrace;
   final DateTime time;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is LogMessage &&
+          runtimeType == other.runtimeType &&
+          level == other.level &&
+          msg == other.msg &&
+          stackTrace == other.stackTrace &&
+          time == other.time;
+
+  @override
+  int get hashCode => Object.hashAll([
+        level.hashCode,
+        msg.hashCode,
+        stackTrace.hashCode,
+        time.hashCode,
+      ]);
+
+  @override
+  String toString() {
+    return 'LogMessage{level: $level, msg: $msg, stackTrace: $stackTrace, time: $time}';
+  }
+
+  String toFormattedString() {
+    return '[$time:${level.name}]\t$msg${stackTrace == null ? '' : '\nStackTrace:\n$stackTrace'}';
+  }
 }
 
 /// Уровни логов

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:async/async.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:get_it/get_it.dart';
@@ -13,7 +12,7 @@ import 'package:light_house/src/models/log_message_model.dart';
 import 'package:light_house/src/widgets/errors_widgets/errors_widgets.dart';
 import 'package:mobx/mobx.dart';
 
-const _padding = EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0);
+const _padding = EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0);
 
 /// Анимированный список, который используется исключительно для нотификации пользователя
 /// о не пройденности всех этапов для полноценной работы приложения
