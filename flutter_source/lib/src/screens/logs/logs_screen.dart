@@ -4,7 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:light_house/src/controllers/additions/logs_store_controller.dart';
 import 'package:light_house/src/controllers/additions/settings_controller.dart';
 import 'package:light_house/src/models/log_message_model.dart';
-import 'package:light_house/src/screens/logs/widgets/filters_widgets.dart';
+import 'package:light_house/src/screens/logs/widgets/logs_widgets.dart';
 
 /// Экран с выводом логов приложения из [SettingsController]
 class LogsScreen extends StatelessWidget {
@@ -42,6 +42,7 @@ class _BodyState extends State<_Body> {
       child: Column(
         children: [
           FiltersBar(_selectedMessageLevel),
+          const SizedBox(height: 8),
           Expanded(
             child: Observer(
               builder: (context) {
