@@ -63,7 +63,7 @@ class InitCallbacks {
     PlatformDispatcher.instance.onError = (error, stack) {
       platformDispatcher?.call(error, stack);
       logsStoreController.addLog(LogMessage.error(error.toString(), stackTrace: stack));
-      return true;
+      return false;
     };
   }
 }
