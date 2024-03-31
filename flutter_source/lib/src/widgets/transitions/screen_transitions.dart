@@ -9,6 +9,7 @@ import 'package:light_house/src/utils/utils.dart';
 enum CustomClippers {
   triangle,
   fan,
+  circle,
 }
 
 /// Виджет, который передает данные для нашей кастомной анимации перехода, внутри вызывает Clipper - [_TriangleClipper]
@@ -35,6 +36,7 @@ class CustomClipTransition extends AnimatedWidget {
       clipper: switch (clipper) {
         CustomClippers.triangle => _TriangleClipper(animation.value),
         CustomClippers.fan => _FanClipper(animation.value),
+        CustomClippers.circle => _CircleClipper(animation.value),
       },
       child: child,
     );
@@ -97,6 +99,27 @@ class _FanClipper extends _TransitionClipper {
     );
 
     path.close();
+    return path;
+  }
+}
+
+/// Круговой клиппер, где отрисованная область создает описанную окружность над экраном
+class _CircleClipper extends _TransitionClipper {
+  _CircleClipper(super.progress);
+
+  @override
+  Path getClip(Size size) {
+    // Расчет радиуса описанной окружности, где центр круга == центру экрана
+    final center = size / 2;
+    final radius = math.sqrt(math.pow(center.height, 2) + math.pow(center.width, 2));
+
+    final path = Path();
+    path.addOval(
+      Rect.fromCircle(
+        radius: radius * progress,
+        center: Offset(center.width, center.height),
+      ),
+    );
     return path;
   }
 }

@@ -42,6 +42,7 @@ class Settings extends StatelessWidget {
                             switch (e) {
                               CustomClippers.fan => 'Веер',
                               CustomClippers.triangle => 'Треугольник',
+                              CustomClippers.circle => 'Круг',
                             },
                           ),
                         ),
