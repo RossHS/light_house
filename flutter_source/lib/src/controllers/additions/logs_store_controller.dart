@@ -53,13 +53,17 @@ class InitCallbacks {
   /// Подключение ошибок Flutter и Dart к контроллеру [LogsStoreController]
   // ignore: library_private_types_in_public_api
   static void trackFlutterErrors(_LogsStoreControllerBase logsStoreController) {
+    final flutterError = FlutterError.onError;
     FlutterError.onError = (errorDetails) {
+      flutterError?.call(errorDetails);
       logsStoreController.addLog(LogMessage.error(errorDetails.toString(), stackTrace: errorDetails.stack));
     };
 
+    final platformDispatcher = PlatformDispatcher.instance.onError;
     PlatformDispatcher.instance.onError = (error, stack) {
+      platformDispatcher?.call(error, stack);
       logsStoreController.addLog(LogMessage.error(error.toString(), stackTrace: stack));
-      return true;
+      return false;
     };
   }
 }

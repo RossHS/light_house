@@ -14,30 +14,53 @@ class LightHue extends StatelessWidget {
       builder: (context) {
         final rgbController = GetIt.I<RGBController>();
         final brightnessController = GetIt.I<BrightnessController>();
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ColorPicker(
-              labelTypes: const [],
-              enableAlpha: false,
-              displayThumbColor: false,
-              colorPickerWidth: 500,
-              paletteType: PaletteType.hueWheel,
-              pickerColor: rgbController.color,
-              onColorChanged: (color) {
-                rgbController.color = color;
-              },
-            ),
-            Slider(
-              activeColor: Colors.yellow,
-              value: brightnessController.brightness.toDouble(),
-              min: 0,
-              max: 255,
-              onChanged: (value) {
-                brightnessController.brightness = value.toInt();
-              },
-            ),
-          ],
+        return SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ColorPicker(
+                labelTypes: const [],
+                enableAlpha: false,
+                displayThumbColor: false,
+                colorPickerWidth: 350,
+                paletteType: PaletteType.hueWheel,
+                pickerColor: rgbController.color,
+                onColorChanged: (color) {
+                  rgbController.color = color;
+                },
+              ),
+              Slider(
+                activeColor: Colors.red,
+                value: rgbController.color.red.toDouble(),
+                min: 0,
+                max: 255,
+                onChanged: (value) => rgbController.withRed(value.toInt()),
+              ),
+              Slider(
+                activeColor: Colors.green,
+                value: rgbController.color.green.toDouble(),
+                min: 0,
+                max: 255,
+                onChanged: (value) => rgbController.withGreen(value.toInt()),
+              ),
+              Slider(
+                activeColor: Colors.blue,
+                value: rgbController.color.blue.toDouble(),
+                min: 0,
+                max: 255,
+                onChanged: (value) => rgbController.withBlue(value.toInt()),
+              ),
+              Slider(
+                activeColor: Colors.yellow,
+                value: brightnessController.brightness.toDouble(),
+                min: 0,
+                max: 255,
+                onChanged: (value) {
+                  brightnessController.brightness = value.toInt();
+                },
+              ),
+            ],
+          ),
         );
       },
     );
