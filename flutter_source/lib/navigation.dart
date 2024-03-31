@@ -27,7 +27,6 @@ CustomTransitionPage _buildDefaultTransition<T>(BuildContext context, GoRouterSt
     transitionDuration: const Duration(milliseconds: 700),
     reverseTransitionDuration: const Duration(milliseconds: 700),
     transitionsBuilder: (_, animation, __, child) => CustomClipTransition(
-      clipper: CustomClippers.fan,
       animation: CurvedAnimation(parent: animation, curve: Curves.easeInOutCirc),
       child: child,
     ),

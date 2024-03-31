@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:light_house/src/controllers/additions/settings_controller.dart';
 import 'package:light_house/src/utils/utils.dart';
 
 /// Варианты кастомных переходов, которые будут использоваться в [CustomClipTransition]
@@ -14,17 +16,21 @@ class CustomClipTransition extends AnimatedWidget {
   const CustomClipTransition({
     super.key,
     required Animation<double> animation,
-    this.clipper = CustomClippers.triangle,
+    this.clipper,
     required this.child,
   }) : super(listenable: animation);
 
   final Widget child;
-  final CustomClippers clipper;
+  final CustomClippers? clipper;
 
   Animation<double> get animation => listenable as Animation<double>;
 
   @override
   Widget build(BuildContext context) {
+    // Для задания типа перехода извне, либо явная передача данных,
+    // но код был бы чище, если бы я использовал InheritedWidget,
+    // но текущий вариант в разы проще и понятнее
+    var clipper = this.clipper ?? GetIt.I<SettingsController>().currentClipper;
     return ClipPath(
       clipper: switch (clipper) {
         CustomClippers.triangle => _TriangleClipper(animation.value),
