@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:light_house/src/controllers/additions/settings_controller.dart';
-import 'package:light_house/src/screens/logs/logs_screen.dart';
 
 /// Экран настроек приложения
 class Settings extends StatelessWidget {
@@ -23,9 +23,7 @@ class Settings extends StatelessWidget {
               onChanged: (value) => controller.glitchOn = value,
             ),
             TextButton.icon(
-              onPressed: () => Navigator.of(context, rootNavigator: true).push(
-                MaterialPageRoute(builder: (context) => const LogsScreen()),
-              ),
+              onPressed: () => context.go('/logs_screen'),
               icon: const Icon(Icons.note),
               label: const Text('Логи'),
             ),
