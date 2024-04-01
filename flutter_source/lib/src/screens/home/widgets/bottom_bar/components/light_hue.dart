@@ -3,6 +3,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
+import 'package:light_house/src/screens/home/widgets/bottom_bar/bottom_bar_components.dart';
 
 /// Колесо Hue для управления цветом лампы
 class LightHue extends StatelessWidget {
@@ -59,6 +60,7 @@ class LightHue extends StatelessWidget {
                   brightnessController.brightness = value.toInt();
                 },
               ),
+              const MyColorsSaverButton(),
             ],
           ),
         );
