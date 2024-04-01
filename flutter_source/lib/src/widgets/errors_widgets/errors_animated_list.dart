@@ -38,15 +38,19 @@ class _ErrorsAnimatedListState extends State<ErrorsAnimatedList> {
     final diffs = _searchDiffs(_localChildren, widget.children);
     if (diffs.isNotEmpty) {
       _localChildren = [...widget.children];
+      // Индекс для смещения удаления, т.к. мы можем захотеть удалить,
+      // и важно понимать, что индекс удаления изменится
+      var delIndexDif = 0;
       for (var difElement in diffs) {
         if (!difElement.isAdded) {
           _listKey.currentState!.removeItem(
-            difElement.index,
+            difElement.index - delIndexDif,
             (context, animation) => _removeIt(
               difElement.widget,
               animation,
             ),
           );
+          delIndexDif++;
         } else {
           _listKey.currentState!.insertItem(difElement.index);
         }

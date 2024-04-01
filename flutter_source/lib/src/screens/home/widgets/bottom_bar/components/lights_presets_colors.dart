@@ -22,9 +22,14 @@ class LightsPresetsColors extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return SizedBox(
-      width: MediaQuery.of(context).size.width / 1.5,
-      child: Padding(
+    final contentSize = MediaQuery.of(context).size / 1.5;
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        minWidth: contentSize.width,
+        maxWidth: contentSize.width,
+        maxHeight: contentSize.height,
+      ),
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,

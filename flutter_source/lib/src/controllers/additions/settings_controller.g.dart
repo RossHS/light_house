@@ -25,6 +25,22 @@ mixin _$SettingsController on _SettingsControllerBase, Store {
     });
   }
 
+  late final _$_currentClipperAtom =
+      Atom(name: '_SettingsControllerBase._currentClipper', context: context);
+
+  @override
+  CustomClippers get _currentClipper {
+    _$_currentClipperAtom.reportRead();
+    return super._currentClipper;
+  }
+
+  @override
+  set _currentClipper(CustomClippers value) {
+    _$_currentClipperAtom.reportWrite(value, super._currentClipper, () {
+      super._currentClipper = value;
+    });
+  }
+
   late final _$_SettingsControllerBaseActionController =
       ActionController(name: '_SettingsControllerBase', context: context);
 

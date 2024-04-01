@@ -1,12 +1,13 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
-import 'package:light_house/src/controllers/additions/my_colors_controller.dart';
 import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
+import 'package:light_house/src/screens/home/widgets/bottom_bar/bottom_bar_components.dart';
+import 'package:light_house/src/widgets/custom_popup_menu.dart';
 import 'package:light_house/src/widgets/light_bubble.dart';
-import 'package:light_house/src/widgets/object_fly_animation.dart';
-import 'package:light_house/src/widgets/shake_jump_animation.dart';
 
 /// Центральная кнопка на панели [BottomBar]. Нажатие на нее сохраняет
 /// текущий цвет в сохраненное
@@ -18,26 +19,11 @@ class BottomBarMiddleButton extends StatefulWidget {
 }
 
 class _BottomBarMiddleButtonState extends State<BottomBarMiddleButton> {
-  final GlobalKey _sourceKey = GlobalKey(debugLabel: 'flying_animation_source_key');
-  final _shakeJumpController = ShakeJumpController();
-  late final ObjectFlyingNotifier _flyingNotifier;
-
-  /// Цвет, который мы планируем сохранять
-  Color? colorForSave;
-
-  @override
-  void initState() {
-    super.initState();
-    _flyingNotifier = ObjectFlyAnimation.notifier(context);
-    // Слушаем окончание анимации, когда она закончилась,
-    // можем добавлять цвет в сохраненные
-    _flyingNotifier.addListener(_flyingListener);
-  }
+  final _customPopupController = CustomPopupMenuController();
 
   @override
   void dispose() {
-    _flyingNotifier.removeListener(_flyingListener);
-    _shakeJumpController.dispose();
+    _customPopupController.dispose();
     super.dispose();
   }
 
@@ -45,19 +31,23 @@ class _BottomBarMiddleButtonState extends State<BottomBarMiddleButton> {
   Widget build(BuildContext context) {
     final colorController = GetIt.I<RGBController>();
     final brightnessController = GetIt.I<BrightnessController>();
-    final myColorsController = GetIt.I<MyColorsController>();
 
-    return Padding(
-      key: _sourceKey,
-      padding: const EdgeInsets.all(8.0),
-      child: ShakeJumpAnimation(
-        controller: _shakeJumpController,
+    return CustomPopupMenu(
+      controller: _customPopupController,
+      menuBuilder: () {
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+          child: const LightHue(),
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: Observer(
           builder: (context) {
             final color = colorController.color;
             final brightness = brightnessController.brightness;
             return GestureDetector(
-              onTap: () => onTap(color, myColorsController),
+              onTap: _onTap,
               child: LightBubble(
                 radius: 50,
                 color: color,
@@ -70,34 +60,8 @@ class _BottomBarMiddleButtonState extends State<BottomBarMiddleButton> {
     );
   }
 
-  void _flyingListener() {
-    if (_flyingNotifier.value == ObjectFlyingStates.ended && colorForSave != null) {
-      GetIt.I<MyColorsController>().saveColor(colorForSave!);
-      colorForSave = null;
-    }
-  }
-
-  Future<void> onTap(Color color, MyColorsController myColorsController) async {
-    final flyingState = _flyingNotifier.value;
+  void _onTap() {
     HapticFeedback.heavyImpact();
-
-    if (flyingState == ObjectFlyingStates.started || await myColorsController.contains(color)) {
-      _shakeJumpController.shake();
-    } else {
-      if (!mounted) return;
-      colorForSave = color;
-      ObjectFlyAnimation.of(context).startFlyAnimation(
-        sourceWidget: _sourceKey,
-        flyingWidget: DecoratedBox(
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-            border: Border.all(width: 0.5),
-          ),
-          child: const SizedBox.square(dimension: 30),
-        ),
-      );
-      _shakeJumpController.jump();
-    }
+    _customPopupController.showMenu();
   }
 }

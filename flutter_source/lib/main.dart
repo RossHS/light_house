@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:light_house/navigation.dart';
 import 'package:light_house/src/controllers/additions/app_theme_controller.dart';
 import 'package:light_house/src/controllers/additions/logs_store_controller.dart';
 import 'package:light_house/src/controllers/additions/my_colors_controller.dart';
 import 'package:light_house/src/controllers/additions/settings_controller.dart';
 import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
-import 'package:light_house/src/screens/home/home_screen.dart';
 import 'package:light_house/src/utils/app_themes.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,12 +29,12 @@ class MyApp extends StatelessWidget {
     return Observer(
       builder: (context) {
         final appThemeController = GetIt.I<AppThemeController>();
-        return MaterialApp(
+        return MaterialApp.router(
+          routerConfig: router,
           title: 'Light House',
           themeMode: appThemeController.themeMode.rawMode,
           theme: generateThemeData(seedColor: GetIt.I<RGBController>().color, brightness: Brightness.light),
           darkTheme: generateThemeData(seedColor: GetIt.I<RGBController>().color, brightness: Brightness.dark),
-          home: const HomeScreen(),
         );
       },
     );
