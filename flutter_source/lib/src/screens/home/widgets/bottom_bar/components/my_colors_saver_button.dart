@@ -47,9 +47,8 @@ class _MyColorsSaverButtonState extends State<MyColorsSaverButton> {
       controller: _shakeJumpController,
       child: Builder(
         builder: (context) {
-          final color = colorController.color;
           return TextButton.icon(
-            onPressed: () => _onTap(color),
+            onPressed: () => _onTap(colorController.color),
             icon: const Icon(Icons.save),
             label: const Text('Сохранить'),
           );
