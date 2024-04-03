@@ -3,12 +3,13 @@ import 'dart:math';
 
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
+import 'package:flutter_reactive_ble/flutter_reactive_ble.dart' hide FlutterReactiveBle;
 import 'package:get_it/get_it.dart';
 import 'package:light_house/main.dart' as main;
 import 'package:light_house/src/controllers/additions/logs_store_controller.dart';
 import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
 import 'package:light_house/src/models/log_message_model.dart';
+import 'package:light_house/src/services/ble_react_wrapper_interface.dart';
 import 'package:light_house/src/widgets/errors_widgets/errors_widgets.dart';
 import 'package:mobx/mobx.dart';
 
@@ -44,7 +45,7 @@ class _AnimatedAppErrorsListState extends State<AnimatedAppErrorsList> {
     // Да, не самый красивый и понятный код, но все из-за ограничений при работе с [ErrorsAnimatedList]
     // Т.е. у нас в верхнем уровне обязательно должен быть именно конечный виджет для отрисовки,
     // таким образом, если добавить в само дерево [StreamBuilder], то у нас поломается анимация добавления и удаления
-    _bleStatusListener = FlutterReactiveBle().statusStream.listen((event) {
+    _bleStatusListener = BleReactWrapperInterface().statusStream.listen((event) {
       if (!mounted) return;
       setState(() {
         _bleStatusWidget = switch (event) {

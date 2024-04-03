@@ -1,9 +1,10 @@
 import 'dart:async';
 
 import 'package:async/async.dart';
-import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
+import 'package:flutter_reactive_ble/flutter_reactive_ble.dart' hide FlutterReactiveBle;
 import 'package:get_it/get_it.dart';
 import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
+import 'package:light_house/src/services/ble_react_wrapper_interface.dart';
 import 'package:light_house/src/utils/logger.dart';
 import 'package:mobx/mobx.dart';
 
@@ -14,7 +15,7 @@ class BLEConnectionController = _BLEConnectionControllerBase with _$BLEConnectio
 
 /// Контроллер состояния подключения и отключения от BLE
 abstract class _BLEConnectionControllerBase with Store {
-  final ble = FlutterReactiveBle();
+  final BleReactWrapperInterface ble = BleReactWrapperInterface();
   final _blePresetsController = GetIt.I<BLEDevicePresetsInitController>();
 
   /// Таймер на отключение неактивного соединения

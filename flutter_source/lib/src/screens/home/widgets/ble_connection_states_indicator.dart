@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
+import 'package:flutter_reactive_ble/flutter_reactive_ble.dart' hide FlutterReactiveBle;
 import 'package:get_it/get_it.dart';
 import 'package:light_house/src/controllers/ble_core/ble_connection_controller.dart';
 import 'package:light_house/src/widgets/light_bubble.dart';
