@@ -15,7 +15,7 @@ class BLEConnectionController = _BLEConnectionControllerBase with _$BLEConnectio
 
 /// Контроллер состояния подключения и отключения от BLE
 abstract class _BLEConnectionControllerBase with Store {
-  final BleReactWrapperInterface ble = BleReactWrapperInterface();
+  final BleReactWrapperInterface ble = GetIt.I<BleReactWrapperInterface>();
   final _blePresetsController = GetIt.I<BLEDevicePresetsInitController>();
 
   /// Таймер на отключение неактивного соединения

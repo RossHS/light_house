@@ -9,6 +9,7 @@ import 'package:light_house/src/controllers/additions/logs_store_controller.dart
 import 'package:light_house/src/controllers/additions/my_colors_controller.dart';
 import 'package:light_house/src/controllers/additions/settings_controller.dart';
 import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
+import 'package:light_house/src/services/ble_react_wrappers.dart';
 import 'package:light_house/src/utils/app_themes.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,7 +18,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await permissionRequest();
-  await _diRegisters();
+  await diRegisters(isMock: true);
   runApp(const MyApp());
 }
 
@@ -42,7 +43,8 @@ class MyApp extends StatelessWidget {
 }
 
 /// Регистрация данных в сервис для контроллеров через GetIt
-Future<void> _diRegisters() async {
+// TODO 03.04.2024 - подумать, как лучше организовать прокидывание mock данных
+Future<void> diRegisters({bool isMock = false}) async {
   // Регистрация хранилища логов.
   GetIt.I.registerSingleton<LogsStoreController>(
     LogsStoreController(
@@ -52,7 +54,7 @@ Future<void> _diRegisters() async {
       },
     ),
   );
-
+  GetIt.I.registerSingleton<BleReactWrapperInterface>(isMock ? BleReactWrapperMock() : BleReactWrapperImpl());
   final prefs = await SharedPreferences.getInstance();
   GetIt.I.registerSingleton<SharedPreferences>(prefs);
   // BLE

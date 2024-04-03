@@ -50,7 +50,7 @@ abstract class _BLEDevicePresetsInitControllerBase with Store {
     if (_searchSPForData()) return;
     bleDeviceDataForConnection = const AsyncValue.loading();
     _setTimer();
-    _listener = BleReactWrapperInterface().scanForDevices(withServices: []).listen((event) {
+    _listener = GetIt.I<BleReactWrapperInterface>().scanForDevices(withServices: []).listen((event) {
       if (event.name == 'HMSoft') {
         logger.d('correct device found - $event');
         _timer?.cancel();

@@ -45,7 +45,7 @@ class _AnimatedAppErrorsListState extends State<AnimatedAppErrorsList> {
     // Да, не самый красивый и понятный код, но все из-за ограничений при работе с [ErrorsAnimatedList]
     // Т.е. у нас в верхнем уровне обязательно должен быть именно конечный виджет для отрисовки,
     // таким образом, если добавить в само дерево [StreamBuilder], то у нас поломается анимация добавления и удаления
-    _bleStatusListener = BleReactWrapperInterface().statusStream.listen((event) {
+    _bleStatusListener = GetIt.I<BleReactWrapperInterface>().statusStream.listen((event) {
       if (!mounted) return;
       setState(() {
         _bleStatusWidget = switch (event) {
