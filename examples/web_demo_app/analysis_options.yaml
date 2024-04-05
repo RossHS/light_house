@@ -1,1 +1,5 @@
 include: package:ross_lints/rules.yaml
+
+linter:
+  rules:
+    depend_on_referenced_packages: false
