@@ -110,6 +110,7 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> with SingleTickerProv
                 anchorSize: _childBox!.size,
                 offset: _childBox!.localToGlobal(
                   Offset(-widget.horizontalMargin, 0),
+                  ancestor: Overlay.of(context).context.findRenderObject(),
                 ),
                 verticalMargin: widget.verticalMargin,
                 onScreenRectCalculated: (rect) => _menuScreenRect = rect,
