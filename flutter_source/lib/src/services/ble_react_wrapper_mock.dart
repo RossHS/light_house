@@ -19,7 +19,7 @@ class BleReactWrapperMock implements BleReactWrapperInterface {
   /// Слушатель, куда будут передаваться данные через метод [writeCharacteristicWithoutResponse]
   BleMockDataListener? _dataListener;
 
-  set dataListener(BleMockDataListener listener) => _dataListener = listener;
+  set dataListener(BleMockDataListener? listener) => _dataListener = listener;
 
   /// Подключение к несуществующему устройству
   @override

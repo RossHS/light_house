@@ -42,17 +42,16 @@ class _MyColorsSaverButtonState extends State<MyColorsSaverButton> {
   Widget build(BuildContext context) {
     final colorController = GetIt.I<RGBController>();
 
-    return ShakeJumpAnimation(
-      key: _sourceKey,
-      controller: _shakeJumpController,
-      child: Builder(
-        builder: (context) {
-          return TextButton.icon(
-            onPressed: () => _onTap(colorController.color),
-            icon: const Icon(Icons.save),
-            label: const Text('Сохранить'),
-          );
-        },
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ShakeJumpAnimation(
+        key: _sourceKey,
+        controller: _shakeJumpController,
+        child: TextButton.icon(
+          onPressed: () => _onTap(colorController.color),
+          icon: const Icon(Icons.save),
+          label: const Text('Сохранить'),
+        ),
       ),
     );
   }
