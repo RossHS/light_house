@@ -16,7 +16,7 @@ dependencies:
   light_house:
     path:
       ../../flutter_source
-  cupertino_icons: ^1.0.6
+  url_launcher: ^6.2.5
 
 dev_dependencies:
   flutter_test:
@@ -29,10 +29,10 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-#  shaders:
-#    - /../../flutter_source/assets/shaders/glitch.glsl
+  shaders:
+    - assets/shaders/glitch.glsl
 
   fonts:
     - family: JetBrains Mono
       fonts:
-        - asset: ../../flutter_source/assets/fonts/JetBrainsMono.ttf
+        - asset: assets/fonts/JetBrainsMono.ttf

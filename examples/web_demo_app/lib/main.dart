@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      theme: ThemeData(fontFamily: 'JetBrains Mono'),
       routerConfig: router,
       title: 'Light House',
     );
