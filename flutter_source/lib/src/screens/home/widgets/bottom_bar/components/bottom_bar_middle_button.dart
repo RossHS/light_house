@@ -46,12 +46,15 @@ class _BottomBarMiddleButtonState extends State<BottomBarMiddleButton> {
           builder: (context) {
             final color = colorController.color;
             final brightness = brightnessController.brightness;
-            return GestureDetector(
-              onTap: _onTap,
-              child: LightBubble(
-                radius: 50,
-                color: color,
-                brightness: brightness,
+            return MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: _onTap,
+                child: LightBubble(
+                  radius: 50,
+                  color: color,
+                  brightness: brightness,
+                ),
               ),
             );
           },

@@ -119,6 +119,7 @@ class _State extends State<ToggleAnimatedButton> with SingleTickerProviderStateM
 mixin _AnimatedButtonStateMixin<T extends StatefulWidget> on State<T>, SingleTickerProviderStateMixin<T> {
   late final AnimationController _animationController;
   late Animation<Offset> _offsetAnimation;
+  final _isHover = ValueNotifier<bool>(false);
 
   Color? get _color;
 
@@ -145,7 +146,14 @@ mixin _AnimatedButtonStateMixin<T extends StatefulWidget> on State<T>, SingleTic
   }
 
   @override
+  void didUpdateWidget(covariant oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_onPressed == null) _isHover.value = false;
+  }
+
+  @override
   void dispose() {
+    _isHover.dispose();
     _animationController.dispose();
     super.dispose();
   }
@@ -156,21 +164,20 @@ mixin _AnimatedButtonStateMixin<T extends StatefulWidget> on State<T>, SingleTic
     final theme = Theme.of(context);
     final color = _color ?? theme.colorScheme.surface;
     return RepaintBoundary(
-      child: DefaultTextStyle(
-        textAlign: TextAlign.center,
-        style: theme.textTheme.bodyMedium!,
+      child: MouseRegion(
+        onEnter: (_) => _onHover(true),
+        onExit: (_) => _onHover(false),
+        cursor: SystemMouseCursors.click,
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: colorScheme.onSurface,
           ),
           child: AnimatedBuilder(
             animation: _animationController,
-            builder: (context, child) {
-              return Transform.translate(
-                offset: _offsetAnimation.value,
-                child: child,
-              );
-            },
+            builder: (_, child) => Transform.translate(
+              offset: _offsetAnimation.value,
+              child: child,
+            ),
             child: GestureDetector(
               onTap: _onPressed == null
                   ? null
@@ -181,18 +188,36 @@ mixin _AnimatedButtonStateMixin<T extends StatefulWidget> on State<T>, SingleTic
               onTapCancel: _onTapUp,
               onTapDown: _onPressed != null ? _onTapDown : null,
               onTapUp: (_) => _onPressed != null ? _onTapUp() : null,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: color,
-                  border: Border.all(
-                    color: theme.colorScheme.onSurface,
-                    width: 0.5,
+              // Усложнил код, но уменьшил скоуп редилба
+              child: ValueListenableBuilder(
+                valueListenable: _isHover,
+                // Как вариант, написать свою реализацию AnimatedDecoratedBox, но не стал
+                builder: (_, isHover, child) => TweenAnimationBuilder<Decoration>(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.fastEaseInToSlowEaseOut,
+                  tween: DecorationTween(
+                    begin: null,
+                    end: BoxDecoration(
+                      color: color,
+                      border: Border.all(
+                        color: theme.colorScheme.onSurface,
+                        width: isHover ? 2.5 : 0.5,
+                      ),
+                    ),
+                  ),
+                  builder: (_, decoration, child) => DecoratedBox(decoration: decoration, child: child),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: DefaultTextStyle(
+                      textAlign: TextAlign.center,
+                      style: isHover
+                          ? theme.textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w900)
+                          : theme.textTheme.bodyMedium!,
+                      child: child!,
+                    ),
                   ),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: _child,
-                ),
+                child: _child,
               ),
             ),
           ),
@@ -206,6 +231,11 @@ mixin _AnimatedButtonStateMixin<T extends StatefulWidget> on State<T>, SingleTic
 
   /// При отпускании кнопки на экране запускает в обратную сторону анимацию нажатия
   void _onTapUp() {}
+
+  void _onHover(bool enter) {
+    if (_onPressed == null) return;
+    _isHover.value = enter;
+  }
 }
 
 //---------------------Widgetbook-----------------//
