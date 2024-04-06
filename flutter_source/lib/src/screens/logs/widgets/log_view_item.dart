@@ -43,6 +43,7 @@ class _LogViewItemState extends State<LogViewItem> {
         ),
         child: InkWell(
           splashColor: boxColor,
+          splashFactory: InkSparkle.splashFactory,
           onTap: _toggleExpanded,
           child: Column(
             children: [
