@@ -98,6 +98,9 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> with SingleTickerProv
     if (_overlayEntry != null) return;
     _overlayEntry = OverlayEntry(
       builder: (context) {
+        // Трюк, начинаем тут слушать MediaQuery, таким образом у нас
+        // будет перерассчитываться размеры при изменении размеров экрана
+        MediaQuery.of(context);
         final theme = Theme.of(context);
         Widget menu = Center(
           child: ConstrainedBox(
@@ -110,6 +113,9 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> with SingleTickerProv
                 anchorSize: _childBox!.size,
                 offset: _childBox!.localToGlobal(
                   Offset(-widget.horizontalMargin, 0),
+                  // Важная строка, таким образом наши "глобальные" координаты
+                  // считаются не всем экраном, а лишь областью доступного оверлея
+                  // и у нас не будет уезжать верстка
                   ancestor: Overlay.of(context).context.findRenderObject(),
                 ),
                 verticalMargin: widget.verticalMargin,
@@ -266,7 +272,10 @@ class _MenuLayoutDelegate extends SingleChildLayoutDelegate {
   }
 
   @override
-  bool shouldRelayout(SingleChildLayoutDelegate oldDelegate) => false;
+  bool shouldRelayout(_MenuLayoutDelegate oldDelegate) =>
+      oldDelegate.anchorSize != anchorSize ||
+      oldDelegate.offset != offset ||
+      oldDelegate.verticalMargin != verticalMargin;
 }
 
 /// Отрисовка контура при появлении [CustomPopupMenu] на экране,
