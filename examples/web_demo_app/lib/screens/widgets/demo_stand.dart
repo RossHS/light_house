@@ -4,38 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_shaders/flutter_shaders.dart';
 import 'package:get_it/get_it.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
-import 'package:light_house/src/services/ble_react_wrappers.dart';
 
 /// Визуализация отправки данных
-class DemoStand extends StatefulWidget {
+class DemoStand extends StatelessWidget {
   const DemoStand({
     super.key,
     required this.mqd,
   });
 
   final MediaQueryData mqd;
-
-  @override
-  State<DemoStand> createState() => _DemoStandState();
-}
-
-class _DemoStandState extends State<DemoStand> {
-  final bleReactWrapperMock = GetIt.I<BleReactWrapperInterface>() as BleReactWrapperMock;
-
-  @override
-  void initState() {
-    super.initState();
-    bleReactWrapperMock.dataListener = (value) {
-      // print(value);
-    };
-  }
-
-  @override
-  void dispose() {
-    bleReactWrapperMock.dataListener = null;
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,27 +25,15 @@ class _DemoStandState extends State<DemoStand> {
       // то необходимо задать ограничения
       child: ConstrainedBox(
         constraints: BoxConstraints(
-          minWidth: widget.mqd.size.width,
-          maxHeight: widget.mqd.size.height,
+          minWidth: mqd.size.width,
+          maxHeight: mqd.size.height,
         ),
-        child: AspectRatio(
+        child: const AspectRatio(
           aspectRatio: 2329 / 3093, // Хардкод соотношение сторон под фотку 🤡
           child: ClipRRect(
             clipBehavior: ui.Clip.antiAlias,
-            borderRadius: const BorderRadius.all(ui.Radius.circular(38.5)),
-            child: _GlitchShader(
-              child: Image.asset(
-                'assets/images/picture.jpg',
-                frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-                  if (wasSynchronouslyLoaded) return child;
-                  return AnimatedOpacity(
-                    opacity: frame == null ? 0 : 1,
-                    duration: const Duration(seconds: 2),
-                    child: child,
-                  );
-                },
-              ),
-            ),
+            borderRadius: BorderRadius.all(ui.Radius.circular(38.5)),
+            child: _DemoStandContent(),
           ),
         ),
       ),
@@ -74,12 +41,51 @@ class _DemoStandState extends State<DemoStand> {
   }
 }
 
+
+/// Все основное, что именно выводится на экран, без лишнего
+class _DemoStandContent extends StatelessWidget {
+  const _DemoStandContent();
+
+  @override
+  Widget build(BuildContext context) {
+    final rgbController = GetIt.I<RGBController>();
+    return Observer(
+      builder: (context) {
+        rgbController.color;
+        // Анимация переключения цвета, добавим немного плавности
+        return TweenAnimationBuilder(
+          duration: const Duration(milliseconds: 200),
+          tween: ColorTween(
+            begin: null,
+            end: rgbController.color,
+          ),
+          builder: (_, color, child) => _GlitchShader(color: color!, child: child!),
+          child: Image.asset(
+            'assets/images/picture.jpg',
+            frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+              if (wasSynchronouslyLoaded) return child;
+              return AnimatedOpacity(
+                opacity: frame == null ? 0 : 1,
+                duration: const Duration(seconds: 2),
+                child: child,
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+}
+
+
 /// Glitch виджет, который использует шейдер
 class _GlitchShader extends StatefulWidget {
   const _GlitchShader({
+    required this.color,
     required this.child,
   });
 
+  final Color color;
   final Widget child;
 
   @override
@@ -87,7 +93,6 @@ class _GlitchShader extends StatefulWidget {
 }
 
 class _GlitchShaderState extends State<_GlitchShader> with SingleTickerProviderStateMixin {
-  final rgbController = GetIt.I<RGBController>();
   var _time = 0.0;
 
   late final Ticker _ticker;
@@ -119,7 +124,7 @@ class _GlitchShaderState extends State<_GlitchShader> with SingleTickerProviderS
           child: child!,
           (ui.Image image, Size size, Canvas canvas) {
             final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
-            final rbgColor = rgbController.color;
+            final rbgColor = widget.color;
             shader
               ..setFloat(0, image.width.toDouble() / devicePixelRatio)
               ..setFloat(1, image.height.toDouble() / devicePixelRatio)
