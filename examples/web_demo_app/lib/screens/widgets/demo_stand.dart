@@ -2,12 +2,12 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_shaders/flutter_shaders.dart';
 import 'package:get_it/get_it.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
 
-/// Визуализация отправки данных
+/// Визуализация отправки данных. Тут представлена "видеодемонстрация" работы приложения
 class DemoStand extends StatelessWidget {
   const DemoStand({
     super.key,
@@ -41,8 +41,7 @@ class DemoStand extends StatelessWidget {
   }
 }
 
-
-/// Все основное, что именно выводится на экран, без лишнего
+/// Все основное, что именно выводится на экран, ничего лишнего.
 class _DemoStandContent extends StatelessWidget {
   const _DemoStandContent();
 
@@ -77,8 +76,8 @@ class _DemoStandContent extends StatelessWidget {
   }
 }
 
-
-/// Glitch виджет, который использует шейдер
+/// Glitch виджет, который использует шейдер, тут творится вся магия)
+/// где [color] - текущий цвет светильника
 class _GlitchShader extends StatefulWidget {
   const _GlitchShader({
     required this.color,
