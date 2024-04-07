@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:light_house/main.dart' as lh;
+import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
 import 'package:light_house_web_demo_app/navigation.dart';
 
 void main() async {
@@ -8,6 +10,8 @@ void main() async {
   await Hive.initFlutter();
   await lh.permissionRequest();
   await lh.diRegisters(isMock: true);
+  // Установка первичного цвета в белый, дабы было видно изображение
+  GetIt.I<RGBController>().color = Colors.white;
   runApp(const MyApp());
 }
 

@@ -1,18 +1,13 @@
 uniform vec2 iResolution;
 uniform float iTime;
-uniform float colorR;
-uniform float colorG;
-uniform float colorB;
+uniform vec3 colorMask;
 uniform sampler2D iChannel0;
 out vec4 fragColor;
 
 // change these values to 0.0 to turn off individual effects
-float vertJerkOpt = 0.0;
-float vertMovementOpt = 0.0;
 float bottomStaticOpt = 1.0;
 float scalinesOpt = 1.0;
-float rgbOffsetOpt = 0.5;
-float horzFuzzOpt = 0.5;
+float horzFuzzOpt = 0.3;
 
 // Noise generation functions borrowed from: 
 // https://github.com/ashima/webgl-noise/blob/master/src/noise2D.glsl
@@ -41,12 +36,7 @@ float snoise(vec2 v)
 
     // Other corners
     vec2 i1;
-    //i1.x = step( x0.y, x0.x ); // x0.x > x0.y ? 1.0 : 0.0
-    //i1.y = 1.0 - i1.x;
     i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
-    // x0 = x0 - 0.0 + 0.0 * C.xx ;
-    // x1 = x0 - i1 + 1.0 * C.xx ;
-    // x2 = x0 - 1.0 + 2.0 * C.xx ;
     vec4 x12 = x0.xyxy + C.xxzz;
     x12.xy -= i1;
 
@@ -86,25 +76,13 @@ float staticV(vec2 uv) {
 }
 
 
-void main()
-{
-
+void main() {
     vec2 uv = gl_FragCoord.xy / iResolution.xy;
 
     float jerkOffset = (1.0 - step(snoise(vec2(iTime * 1.3, 5.0)), 0.8)) * 0.05;
-
     float fuzzOffset = snoise(vec2(iTime * 15.0, uv.y * 80.0)) * 0.003;
     float largeFuzzOffset = snoise(vec2(iTime * 1.0, uv.y * 25.0)) * 0.004;
-
-    float vertMovementOn = (1.0 - step(snoise(vec2(iTime * 0.2, 8.0)), 0.4)) * vertMovementOpt;
-    float vertJerk = (1.0 - step(snoise(vec2(iTime * 1.5, 5.0)), 0.6)) * vertJerkOpt;
-    float vertJerk2 = (1.0 - step(snoise(vec2(iTime * 5.5, 5.0)), 0.2)) * vertJerkOpt;
-    float yOffset = abs(sin(iTime) * 4.0) * vertMovementOn + vertJerk * vertJerk2 * 0.3;
-    float y = mod(uv.y + yOffset, 1.0);
-
-
     float xOffset = (fuzzOffset + largeFuzzOffset) * horzFuzzOpt;
-
     float staticVal = 0.0;
 
     for (float y = -1.0; y <= 1.0; y += 1.0) {
@@ -114,12 +92,8 @@ void main()
     }
 
     staticVal *= bottomStaticOpt;
-
-    float red = texture(iChannel0, vec2(uv.x + xOffset - 0.01 * rgbOffsetOpt, y)).r + staticVal;
-    float green = texture(iChannel0, vec2(uv.x + xOffset, y)).g + staticVal;
-    float blue = texture(iChannel0, vec2(uv.x + xOffset + 0.01 * rgbOffsetOpt, y)).b + staticVal;
-
-    vec3 color = vec3(red * colorR, green * colorG, blue * colorB);
+    vec3 image = texture(iChannel0, vec2(uv.x + xOffset, uv.y)).rgb + staticVal;
+    vec3 color = image * colorMask;
     float scanline = sin(uv.y * 800.0) * 0.04 * scalinesOpt;
     color -= scanline;
 

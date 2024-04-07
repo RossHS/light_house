@@ -15,7 +15,7 @@ class WideScreenLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     final mqd = MediaQuery.of(context).copyWith(size: const Size(450, 900));
     return Padding(
-      padding: const EdgeInsets.symmetric( vertical: 60),
+      padding: const EdgeInsets.symmetric(vertical: 76),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -52,7 +52,7 @@ class _DeviceFrame extends StatelessWidget {
     return FittedBox(
       fit: BoxFit.contain,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(50),

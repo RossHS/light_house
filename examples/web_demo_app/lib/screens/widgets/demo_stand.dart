@@ -2,10 +2,9 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_shaders/flutter_shaders.dart';
 import 'package:get_it/get_it.dart';
-import 'package:light_house/src/controllers/ble_core/rgb_controller.dart';
+import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
 import 'package:light_house/src/services/ble_react_wrappers.dart';
 
 /// Визуализация отправки данных
@@ -28,7 +27,7 @@ class _DemoStandState extends State<DemoStand> {
   void initState() {
     super.initState();
     bleReactWrapperMock.dataListener = (value) {
-      print(value);
+      // print(value);
     };
   }
 
@@ -42,20 +41,32 @@ class _DemoStandState extends State<DemoStand> {
   Widget build(BuildContext context) {
     return FittedBox(
       fit: BoxFit.contain,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16.0),
-        child: SizedBox.square(
-          dimension: widget.mqd.size.longestSide,
-          child: Observer(
-            builder: (context) {
-              final rgbController = GetIt.I<RGBController>();
-              return _GlitchShader(
-                child: Image.asset('assets/images/picture.jpg'
-                    // color: rgbController.color,
-                    // child: Text('pepega'),
-                    ),
-              );
-            },
+      // т.к. картинка может быть не загружена,
+      // а мы в рантайме (при ее загрузке) не знаем фактические размеры,
+      // то необходимо задать ограничения
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          minWidth: widget.mqd.size.width,
+          maxHeight: widget.mqd.size.height,
+        ),
+        child: AspectRatio(
+          aspectRatio: 2329 / 3093, // Хардкод соотношение сторон под фотку 🤡
+          child: ClipRRect(
+            clipBehavior: ui.Clip.antiAlias,
+            borderRadius: const BorderRadius.all(ui.Radius.circular(38.5)),
+            child: _GlitchShader(
+              child: Image.asset(
+                'assets/images/picture.jpg',
+                frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                  if (wasSynchronouslyLoaded) return child;
+                  return AnimatedOpacity(
+                    opacity: frame == null ? 0 : 1,
+                    duration: const Duration(seconds: 2),
+                    child: child,
+                  );
+                },
+              ),
+            ),
           ),
         ),
       ),
@@ -76,6 +87,7 @@ class _GlitchShader extends StatefulWidget {
 }
 
 class _GlitchShaderState extends State<_GlitchShader> with SingleTickerProviderStateMixin {
+  final rgbController = GetIt.I<RGBController>();
   var _time = 0.0;
 
   late final Ticker _ticker;
@@ -100,8 +112,6 @@ class _GlitchShaderState extends State<_GlitchShader> with SingleTickerProviderS
 
   @override
   Widget build(BuildContext context) {
-    final rgbController = GetIt.I<RGBController>();
-    // rgbController.color.blue
     return ShaderBuilder(
       assetKey: 'assets/shaders/cam_glitch.glsl',
       (context, shader, child) {
