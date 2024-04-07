@@ -46,6 +46,7 @@ class _LogViewItemState extends State<LogViewItem> {
           splashFactory: InkSparkle.splashFactory,
           onTap: _toggleExpanded,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -79,7 +80,7 @@ class _LogViewItemState extends State<LogViewItem> {
 
   String? get _stackTraceErrorText {
     if (widget.log.stackTrace == null) return '';
-    return '\nStackTrace:\n${widget.log.stackTrace}';
+    return '\n\nStackTrace:\n${widget.log.stackTrace}';
   }
 
   void _toggleExpanded() {
