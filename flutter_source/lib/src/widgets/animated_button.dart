@@ -164,20 +164,20 @@ mixin _AnimatedButtonStateMixin<T extends StatefulWidget> on State<T>, SingleTic
     final theme = Theme.of(context);
     final color = _color ?? theme.colorScheme.surface;
     return RepaintBoundary(
-      child: MouseRegion(
-        onEnter: (_) => _onHover(true),
-        onExit: (_) => _onHover(false),
-        cursor: SystemMouseCursors.click,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: colorScheme.onSurface,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: colorScheme.onSurface,
+        ),
+        child: AnimatedBuilder(
+          animation: _animationController,
+          builder: (_, child) => Transform.translate(
+            offset: _offsetAnimation.value,
+            child: child,
           ),
-          child: AnimatedBuilder(
-            animation: _animationController,
-            builder: (_, child) => Transform.translate(
-              offset: _offsetAnimation.value,
-              child: child,
-            ),
+          child: MouseRegion(
+            onEnter: (_) => _onHover(true),
+            onExit: (_) => _onHover(false),
+            cursor: SystemMouseCursors.click,
             child: GestureDetector(
               onTap: _onPressed == null
                   ? null
