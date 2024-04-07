@@ -28,9 +28,12 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/
 
   shaders:
     - assets/shaders/glitch.glsl
+    - assets/shaders/cam_glitch.glsl
 
   fonts:
     - family: JetBrains Mono

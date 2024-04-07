@@ -18,7 +18,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await permissionRequest();
-  await diRegisters(isMock: true);
+  await diRegisters();
   runApp(const MyApp());
 }
 
