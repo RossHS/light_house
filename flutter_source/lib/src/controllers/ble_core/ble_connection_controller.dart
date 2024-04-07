@@ -35,9 +35,11 @@ abstract class _BLEConnectionControllerBase with Store {
   void _updateState(DeviceConnectionState newState) {
     _connectionStates = newState;
     if (connectionStates == DeviceConnectionState.connected) {
-      _timer = RestartableTimer(const Duration(minutes: 1), disconnect);
+      _timer?.cancel();
+      _timer = RestartableTimer(const Duration(minutes: 3), disconnect);
     } else if (_connectionStates == DeviceConnectionState.disconnected) {
       _timer?.cancel();
+      _timer = null;
       _connection = null;
     }
   }
