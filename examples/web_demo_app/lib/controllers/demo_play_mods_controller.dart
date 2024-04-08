@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:math' as math;
-import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/painting.dart';
 import 'package:get_it/get_it.dart';
 import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
 import 'package:light_house/src/models/play_mode_models.dart';
@@ -94,9 +94,6 @@ class _BrightnessPlayer extends _AbstractPlayer with _TimeAndColor {
 
   @override
   void colorCallback(Color color) {
-    // Проверка, на которой мы смотрим, у нас действительно
-    // новый цвет или тот, что мы установили сами, необходимо для
-    // быстрой подстройки под новый цвет
     if (color != currentProceedColor) {
       cachedColor = color;
       currentBrightness = diapason.max;
@@ -111,47 +108,29 @@ class _ChangeColorPlayer extends _AbstractPlayer with _TimeAndColor {
   }
 
   /// Сохраненный цвет установленный пользователем
-  late Color cachedColor = rgbController.color;
+  late HSLColor cachedColor = HSLColor.fromColor(rgbController.color);
 
   /// Текущий рассчитываемый цвет
   late Color currentProceedColor = rgbController.color;
 
-  var target = (red: 0, green: 255, blue: 0);
+  var currentHue = 0.0;
 
   final fadeSpeed = 1;
 
   @override
   void timerCallback(Timer timer) {
-    var red = currentProceedColor.red;
-    var green = currentProceedColor.green;
-    var blue = currentProceedColor.blue;
-    if (currentProceedColor.red != target.red) {
-      red += (target.red - red > 0) ? fadeSpeed : -fadeSpeed;
-    } else {
-      target = (red: 0, green: 255, blue: 0);
+    currentHue += 0.5;
+    currentProceedColor = cachedColor.withHue(currentHue % 360).toColor();
+    if (currentProceedColor != rgbController.color) {
+      rgbController.color = currentProceedColor;
     }
-    if (currentProceedColor.green != target.green) {
-      green += (target.green - green > 0) ? fadeSpeed : -fadeSpeed;
-    } else {
-      target = (red: 0, green: 0, blue: 255);
-    }
-
-    if (currentProceedColor.blue != target.blue) {
-      blue += (target.blue - blue > 0) ? fadeSpeed : -fadeSpeed;
-    } else {
-      target = (red: 255, green: 0, blue: 0);
-    }
-    currentProceedColor = Color.fromRGBO(red, green, blue, 1);
-    rgbController.color = currentProceedColor;
   }
 
   @override
   void colorCallback(Color color) {
-    // Проверка, на которой мы смотрим, у нас действительно
-    // новый цвет или тот, что мы установили сами, необходимо для
-    // быстрой подстройки под новый цвет
     if (color != currentProceedColor) {
-      cachedColor = color;
+      cachedColor = HSLColor.fromColor(color);
+      currentHue = cachedColor.hue;
     }
   }
 }
@@ -186,6 +165,9 @@ mixin _TimeAndColor on _AbstractPlayer {
   void timerCallback(Timer timer);
 
   /// Передача текущего цвета с контроллера [rgbController]
+  /// Здесь совершать проверку, на которой мы смотрим, у нас действительно
+  /// новый цвет или тот, что мы установили сами, необходимо для
+  /// быстрой подстройки под новый цвет пользователя
   @protected
   void colorCallback(Color color);
 }
