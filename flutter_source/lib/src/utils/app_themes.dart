@@ -6,14 +6,16 @@ import 'package:material_color_utilities/material_color_utilities.dart';
 ThemeData generateThemeData({required Color seedColor, required Brightness brightness}) {
   final palette = CorePalette.contentOf(seedColor.value);
   final background = Color(brightness == Brightness.light ? palette.primary.get(90) : palette.neutral.get(20));
+  final cs = ColorScheme.fromSeed(
+    seedColor: seedColor,
+    brightness: brightness,
+    error: Colors.redAccent,
+    surface: background,
+  );
   return ThemeData(
     fontFamily: 'JetBrains Mono',
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: seedColor,
-      brightness: brightness,
-      error: Colors.redAccent,
-      surface: background,
-    ),
+    colorScheme: cs,
     scaffoldBackgroundColor: background,
+    iconTheme: IconThemeData(color: cs.onSurface),
   );
 }
