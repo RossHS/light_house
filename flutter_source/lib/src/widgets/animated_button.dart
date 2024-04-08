@@ -162,7 +162,7 @@ mixin _AnimatedButtonStateMixin<T extends StatefulWidget> on State<T>, SingleTic
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final theme = Theme.of(context);
-    final color = _color ?? colorScheme.inverseSurface;
+    final color = _color ?? theme.canvasColor;
     return RepaintBoundary(
       child: DecoratedBox(
         decoration: BoxDecoration(
