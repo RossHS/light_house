@@ -38,10 +38,15 @@ class InitCallbacks {
           _ => MessageLevel.info,
         };
 
+        var msg = event.message.toString();
+        if (event.error != null) {
+          msg = 'Error:\n${event.error.toString()}\n\nMessage:\n$msg';
+        }
+
         logsStoreController.addLog(
           LogMessage(
             level: level,
-            msg: event.message.toString(),
+            msg: msg,
             stackTrace: event.stackTrace,
             time: event.time,
           ),

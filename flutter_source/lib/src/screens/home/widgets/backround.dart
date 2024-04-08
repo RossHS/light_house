@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -5,10 +7,9 @@ import 'package:flutter_shaders/flutter_shaders.dart';
 import 'package:get_it/get_it.dart';
 import 'package:light_house/src/controllers/additions/settings_controller.dart';
 import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
-import 'package:light_house/src/widgets/running_text_animation.dart';
-import 'package:light_house/src/utils/extensions.dart';
 import 'package:light_house/src/utils/color_names/color_names.dart';
-import 'dart:ui' as ui;
+import 'package:light_house/src/utils/extensions.dart';
+import 'package:light_house/src/widgets/running_text_animation.dart';
 
 /// Виджет фона, который используется для главной страницы приложения
 class Background extends StatefulWidget {
@@ -87,7 +88,7 @@ class _GlitchShaderState extends State<_GlitchShader> with SingleTickerProviderS
   void initState() {
     super.initState();
     _ticker = createTicker((elapsed) {
-      _time += 0.015;
+      _time = elapsed.inMilliseconds / 1000;
       setState(() {});
     });
     _ticker.start();

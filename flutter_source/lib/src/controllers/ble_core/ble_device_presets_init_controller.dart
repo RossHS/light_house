@@ -1,8 +1,9 @@
 import 'dart:async';
 
 import 'package:async/async.dart';
-import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
+import 'package:flutter_reactive_ble/flutter_reactive_ble.dart' hide FlutterReactiveBle;
 import 'package:get_it/get_it.dart';
+import 'package:light_house/src/services/ble_react_wrapper_interface.dart';
 import 'package:light_house/src/utils/logger.dart';
 import 'package:light_house/src/utils/mobx_async_value.dart';
 import 'package:light_house/src/utils/sp_keys.dart';
@@ -49,7 +50,7 @@ abstract class _BLEDevicePresetsInitControllerBase with Store {
     if (_searchSPForData()) return;
     bleDeviceDataForConnection = const AsyncValue.loading();
     _setTimer();
-    _listener = FlutterReactiveBle().scanForDevices(withServices: []).listen((event) {
+    _listener = GetIt.I<BleReactWrapperInterface>().scanForDevices(withServices: []).listen((event) {
       if (event.name == 'HMSoft') {
         logger.d('correct device found - $event');
         _timer?.cancel();

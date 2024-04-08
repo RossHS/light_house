@@ -80,11 +80,17 @@ class ObjectFlyAnimationState extends State<ObjectFlyAnimation> with SingleTicke
   /// а [flyingWidget] - это тот виджет который мы подвергнем анимации
   void startFlyAnimation({required GlobalKey sourceWidget, required Widget flyingWidget}) {
     final destBox = widget.destinationGlobalKey.currentContext?.findRenderObject() as RenderBox;
-    final destPosition = destBox.localToGlobal(Offset.zero);
+    final destPosition = destBox.localToGlobal(
+      Offset.zero,
+      ancestor: Overlay.of(context).context.findRenderObject(),
+    );
     final destSize = destBox.size;
 
     final sourceBox = sourceWidget.currentContext?.findRenderObject() as RenderBox;
-    final sourcePosition = sourceBox.localToGlobal(Offset.zero);
+    final sourcePosition = sourceBox.localToGlobal(
+      Offset.zero,
+      ancestor: Overlay.of(context).context.findRenderObject(),
+    );
     final sourceSize = sourceBox.size;
     // Рассчитываем центры виджетов на экране в абсолютных координатах
     _showOverlay(

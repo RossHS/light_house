@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
+import 'package:flutter_reactive_ble/flutter_reactive_ble.dart' hide FlutterReactiveBle;
 import 'package:get_it/get_it.dart';
 import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
 import 'package:light_house/src/models/data_headers.dart';

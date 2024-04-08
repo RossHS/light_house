@@ -1,0 +1,44 @@
+name: light_house_web_demo_app
+description: "Light house. Demo App"
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+  flutter: ^3.19.0
+
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  light_house:
+    path:
+      ../../flutter_source
+  url_launcher: ^6.2.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  build_runner: ^2.4.9
+  mobx_codegen: ^2.6.1
+
+  ross_lints:
+    git:
+      url: https://github.com/RossHS/ross_lint_ruleset
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+
+  shaders:
+    - assets/shaders/glitch.glsl
+    - assets/shaders/cam_glitch.glsl
+
+  fonts:
+    - family: JetBrains Mono
+      fonts:
+        - asset: assets/fonts/JetBrainsMono.ttf

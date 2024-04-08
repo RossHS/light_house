@@ -22,7 +22,7 @@ class LogsView extends StatelessWidget {
     }
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
+        color: theme.colorScheme.inverseSurface,
         border: Border.all(
           color: theme.colorScheme.onSurface,
           width: 0.5,
