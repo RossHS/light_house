@@ -124,11 +124,7 @@ class _DisabledPlayModeGeneratorState extends _AbstractDecorationGeneratorState 
     return AnimatedDecoratedBox(
       key: widget.globalKey,
       decoration: widget.baseDecoration.copyWith(
-        // Именно так, а не просто Colors, т.к. иначе будет кривой переход анимации 😭
-        gradient: LinearGradient(
-          colors: [widget.color],
-          stops: const [1],
-        ),
+        color: widget.color,
       ),
       child: widget.child,
     );
