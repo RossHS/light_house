@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
@@ -35,6 +36,7 @@ class PlayModeModal extends StatelessWidget {
                     alignment: Alignment.bottomCenter,
                     child: _PlayModeIndicatorPreview(
                       const DisabledPlayMode(),
+                      modeName: 'Отключено',
                       gradients: _linearGradients,
                       color: rgbController.color,
                     ),
@@ -49,6 +51,7 @@ class PlayModeModal extends StatelessWidget {
                           alignment: Alignment.topRight,
                           child: _PlayModeIndicatorPreview(
                             const BrightnessPlayMode(),
+                            modeName: 'Яркость',
                             gradients: _radialGradients,
                             color: rgbController.color,
                             heightFactor: 1.5,
@@ -61,6 +64,7 @@ class PlayModeModal extends StatelessWidget {
                           alignment: Alignment.topLeft,
                           child: _PlayModeIndicatorPreview(
                             const ChangeColorPlayMode(),
+                            modeName: 'Динамика',
                             gradients: _sweepGradients,
                             color: rgbController.color,
                             heightFactor: 1.5,
@@ -81,18 +85,21 @@ class PlayModeModal extends StatelessWidget {
 
 /// Плитка режима проигрывания. Где
 /// [playMode] - режим проигрывания
+/// [modeName] - название режима проигрывания
 /// [color] - цвет светильника
 /// [gradients] - градиенты для карточки
 /// [heightFactor] - множитель высоты карточки
 class _PlayModeIndicatorPreview extends StatefulWidget {
   const _PlayModeIndicatorPreview(
     this.playMode, {
+    required this.modeName,
     required this.color,
     required this.gradients,
     this.heightFactor = 1,
   });
 
   final PlayModeBase playMode;
+  final String modeName;
   final Color color;
   final List<Gradient?> gradients;
   final double heightFactor;
@@ -109,33 +116,36 @@ class _PlayModeIndicatorPreviewState extends State<_PlayModeIndicatorPreview> wi
   /// Оповещатель на новый градиент для фона
   final _gradient = ValueNotifier<Gradient?>(null);
   final _gradientDuration = const Duration(milliseconds: 2500);
+  int _gradientIndex = 0;
 
-  int index = 1;
+  final _opacity = ValueNotifier<double>(0);
 
   @override
   void initState() {
     super.initState();
     _animationController = AnimationController(vsync: this, duration: const Duration(seconds: 1));
     _curvedAnimation = CurvedAnimation(parent: _animationController, curve: Curves.easeInOutCubic);
-    // var counterStream = Stream<int>.periodic(const Duration(seconds: 1), (x) => x);
-    // counterStream.;
 
-    _gradient.value = widget.gradients[0];
+    // Таким образом сразу запускаем анимацию без паузы
+    _gradient.value = widget.gradients[_gradientIndex++];
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      setState(() {
+        _gradient.value = widget.gradients[_gradientIndex++];
+      });
+    });
     Timer.periodic(_gradientDuration, (timer) {
       if (!mounted) {
         timer.cancel();
         return;
       }
-      setState(() {
-        _gradient.value = widget.gradients[index % widget.gradients.length];
-        index++;
-      });
+      _gradient.value = widget.gradients[_gradientIndex % widget.gradients.length];
+      _gradientIndex++;
     });
 
     // Запуск анимации на расширения карточки
     Timer(const Duration(milliseconds: 300), () {
       if (!mounted) return;
-      _animationController.forward();
+      _animationController.forward().then((value) => _opacity.value = 1);
     });
   }
 
@@ -143,11 +153,13 @@ class _PlayModeIndicatorPreviewState extends State<_PlayModeIndicatorPreview> wi
   void dispose() {
     _animationController.dispose();
     _gradient.dispose();
+    _opacity.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     // Крайне не универсальное решение, т.к. максимальная ширина
     // потенциально может быть [double.infinity]
     return RepaintBoundary(
@@ -170,7 +182,9 @@ class _PlayModeIndicatorPreviewState extends State<_PlayModeIndicatorPreview> wi
                       return AnimatedDecoratedBox(
                         duration: _gradientDuration,
                         decoration: BoxDecoration(
-                          border: _animationController.value < 0.2 ? null : Border.all(color: Colors.black, width: 2),
+                          border: _animationController.value < 0.2
+                              ? null
+                              : Border.all(color: theme.colorScheme.onSurface, width: 2),
                           gradient: gradient,
                         ),
                         child: SizedBox(
@@ -187,6 +201,26 @@ class _PlayModeIndicatorPreviewState extends State<_PlayModeIndicatorPreview> wi
                 child: PlayModeIndicatorWidget(
                   color: widget.color,
                   playMode: widget.playMode,
+                ),
+              ),
+              Positioned(
+                bottom: 10,
+                left: 0,
+                right: 0,
+                child: ValueListenableBuilder(
+                  valueListenable: _opacity,
+                  builder: (context, value, child) {
+                    return AnimatedOpacity(
+                      duration: const Duration(milliseconds: 500),
+                      opacity: value,
+                      child: child!,
+                    );
+                  },
+                  child: Text(
+                    widget.modeName,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.titleMedium?.copyWith(color: Colors.white),
+                  ),
                 ),
               ),
             ],
