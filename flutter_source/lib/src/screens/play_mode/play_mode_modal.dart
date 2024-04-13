@@ -150,45 +150,47 @@ class _PlayModeIndicatorPreviewState extends State<_PlayModeIndicatorPreview> wi
   Widget build(BuildContext context) {
     // Крайне не универсальное решение, т.к. максимальная ширина
     // потенциально может быть [double.infinity]
-    return LayoutBuilder(
-      builder: (context, constraints) => GestureDetector(
-        onTap: () {
-          Navigator.pop(context);
-          GetIt.I<PlayModeController>().playMode = widget.playMode;
-        },
-        child: Stack(
-          alignment: Alignment.topLeft,
-          clipBehavior: Clip.none,
-          children: [
-            ValueListenableBuilder<Gradient?>(
-              valueListenable: _gradient,
-              builder: (_, gradient, __) {
-                return AnimatedBuilder(
-                  animation: _curvedAnimation,
-                  builder: (_, __) {
-                    return AnimatedDecoratedBox(
-                      duration: _gradientDuration,
-                      decoration: BoxDecoration(
-                        border: _animationController.value < 0.2 ? null : Border.all(color: Colors.black, width: 2),
-                        gradient: gradient,
-                      ),
-                      child: SizedBox(
-                        width: constraints.maxWidth * _curvedAnimation.value,
-                        height: 200 * widget.heightFactor * _curvedAnimation.value,
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-            CustomHero(
-              tag: widget.playMode.modeName,
-              child: PlayModeIndicatorWidget(
-                color: widget.color,
-                playMode: widget.playMode,
+    return RepaintBoundary(
+      child: LayoutBuilder(
+        builder: (context, constraints) => GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+            GetIt.I<PlayModeController>().playMode = widget.playMode;
+          },
+          child: Stack(
+            alignment: Alignment.topLeft,
+            clipBehavior: Clip.none,
+            children: [
+              ValueListenableBuilder<Gradient?>(
+                valueListenable: _gradient,
+                builder: (_, gradient, __) {
+                  return AnimatedBuilder(
+                    animation: _curvedAnimation,
+                    builder: (_, __) {
+                      return AnimatedDecoratedBox(
+                        duration: _gradientDuration,
+                        decoration: BoxDecoration(
+                          border: _animationController.value < 0.2 ? null : Border.all(color: Colors.black, width: 2),
+                          gradient: gradient,
+                        ),
+                        child: SizedBox(
+                          width: constraints.maxWidth * _curvedAnimation.value,
+                          height: 200 * widget.heightFactor * _curvedAnimation.value,
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
-            ),
-          ],
+              CustomHero(
+                tag: widget.playMode.modeName,
+                child: PlayModeIndicatorWidget(
+                  color: widget.color,
+                  playMode: widget.playMode,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
