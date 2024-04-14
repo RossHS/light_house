@@ -1,16 +1,14 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:light_house/src/widgets/widgetbook_def_frame.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
 @widgetbook.UseCase(name: 'GlassBox use case', type: GlassBox)
 Widget glassBoxUseCase(BuildContext context) {
-  return const ColoredBox(
-    color: Colors.greenAccent,
-    child: Center(
-      child: GlassBox(
-        child: SizedBox.square(dimension: 100),
-      ),
+  return const WidgetbookDefFrame(
+    child: GlassBox(
+      child: SizedBox.square(dimension: 100),
     ),
   );
 }

@@ -93,7 +93,7 @@ class LogMessage {
   }
 
   String toFormattedString() {
-    return '[$time:${level.name}]\t$msg${stackTrace == null ? '' : '\nStackTrace:\n$stackTrace'}';
+    return '[$time:${level.name}]\t$msg${stackTrace == null ? '' : '\n\nStackTrace:\n$stackTrace'}';
   }
 }
 

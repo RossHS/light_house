@@ -32,26 +32,29 @@ class _BottomBarMiddleButtonState extends State<BottomBarMiddleButton> {
     final colorController = GetIt.I<RGBController>();
     final brightnessController = GetIt.I<BrightnessController>();
 
-    return CustomPopupMenu(
-      controller: _customPopupController,
-      menuBuilder: () {
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-          child: const LightHue(),
-        );
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
+    return Padding(
+      padding: const EdgeInsets.all(6.0),
+      child: CustomPopupMenu(
+        controller: _customPopupController,
+        menuBuilder: () {
+          return BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+            child: const LightHue(),
+          );
+        },
         child: Observer(
           builder: (context) {
             final color = colorController.color;
             final brightness = brightnessController.brightness;
-            return GestureDetector(
-              onTap: _onTap,
-              child: LightBubble(
-                radius: 50,
-                color: color,
-                brightness: brightness,
+            return MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: _onTap,
+                child: LightBubble(
+                  radius: 50,
+                  color: color,
+                  brightness: brightness,
+                ),
               ),
             );
           },

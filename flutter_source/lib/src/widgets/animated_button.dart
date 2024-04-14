@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:light_house/src/widgets/animated_decorated_box.dart';
+import 'package:light_house/src/widgets/widgetbook_def_frame.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
@@ -119,6 +121,7 @@ class _State extends State<ToggleAnimatedButton> with SingleTickerProviderStateM
 mixin _AnimatedButtonStateMixin<T extends StatefulWidget> on State<T>, SingleTickerProviderStateMixin<T> {
   late final AnimationController _animationController;
   late Animation<Offset> _offsetAnimation;
+  final _isHover = ValueNotifier<bool>(false);
 
   Color? get _color;
 
@@ -145,7 +148,14 @@ mixin _AnimatedButtonStateMixin<T extends StatefulWidget> on State<T>, SingleTic
   }
 
   @override
+  void didUpdateWidget(covariant oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_onPressed == null) _isHover.value = false;
+  }
+
+  @override
   void dispose() {
+    _isHover.dispose();
     _animationController.dispose();
     super.dispose();
   }
@@ -154,23 +164,22 @@ mixin _AnimatedButtonStateMixin<T extends StatefulWidget> on State<T>, SingleTic
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final theme = Theme.of(context);
-    final color = _color ?? theme.colorScheme.surface;
+    final color = _color ?? theme.canvasColor;
     return RepaintBoundary(
-      child: DefaultTextStyle(
-        textAlign: TextAlign.center,
-        style: theme.textTheme.bodyMedium!,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: colorScheme.onSurface,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: colorScheme.onSurface,
+        ),
+        child: AnimatedBuilder(
+          animation: _animationController,
+          builder: (_, child) => Transform.translate(
+            offset: _offsetAnimation.value,
+            child: child,
           ),
-          child: AnimatedBuilder(
-            animation: _animationController,
-            builder: (context, child) {
-              return Transform.translate(
-                offset: _offsetAnimation.value,
-                child: child,
-              );
-            },
+          child: MouseRegion(
+            onEnter: (_) => _onHover(true),
+            onExit: (_) => _onHover(false),
+            cursor: SystemMouseCursors.click,
             child: GestureDetector(
               onTap: _onPressed == null
                   ? null
@@ -181,17 +190,29 @@ mixin _AnimatedButtonStateMixin<T extends StatefulWidget> on State<T>, SingleTic
               onTapCancel: _onTapUp,
               onTapDown: _onPressed != null ? _onTapDown : null,
               onTapUp: (_) => _onPressed != null ? _onTapUp() : null,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: color,
-                  border: Border.all(
-                    color: theme.colorScheme.onSurface,
-                    width: 0.5,
+              // Усложнил код, но уменьшил скоуп редилба
+              child: ValueListenableBuilder(
+                valueListenable: _isHover,
+                builder: (_, isHover, child) => AnimatedDecoratedBox(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.fastEaseInToSlowEaseOut,
+                  decoration: BoxDecoration(
+                    color: color,
+                    border: Border.all(
+                      color: theme.colorScheme.onSurface,
+                      width: isHover ? 2.5 : 0.5,
+                    ),
                   ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: _child,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: DefaultTextStyle(
+                      textAlign: TextAlign.center,
+                      style: isHover
+                          ? theme.textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w900)
+                          : theme.textTheme.bodyMedium!,
+                      child: _child,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -206,13 +227,18 @@ mixin _AnimatedButtonStateMixin<T extends StatefulWidget> on State<T>, SingleTic
 
   /// При отпускании кнопки на экране запускает в обратную сторону анимацию нажатия
   void _onTapUp() {}
+
+  void _onHover(bool enter) {
+    if (_onPressed == null) return;
+    _isHover.value = enter;
+  }
 }
 
 //---------------------Widgetbook-----------------//
 @widgetbook.UseCase(name: 'AnimatedButton use case', type: AnimatedButton)
 Widget animatedButtonUseCase(BuildContext context) {
   final color = context.knobs.colorOrNull(label: 'Close Color');
-  return Center(
+  return WidgetbookDefFrame(
     child: _AnimatedButtonTest(
       buttonColor: color,
     ),

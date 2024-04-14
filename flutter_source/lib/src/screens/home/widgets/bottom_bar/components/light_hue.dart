@@ -14,7 +14,6 @@ class LightHue extends StatelessWidget {
     return Observer(
       builder: (context) {
         final rgbController = GetIt.I<RGBController>();
-        final brightnessController = GetIt.I<BrightnessController>();
         return SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -50,15 +49,6 @@ class LightHue extends StatelessWidget {
                 min: 0,
                 max: 255,
                 onChanged: (value) => rgbController.withBlue(value.toInt()),
-              ),
-              Slider(
-                activeColor: Colors.yellow,
-                value: brightnessController.brightness.toDouble(),
-                min: 0,
-                max: 255,
-                onChanged: (value) {
-                  brightnessController.brightness = value.toInt();
-                },
               ),
               const MyColorsSaverButton(),
             ],

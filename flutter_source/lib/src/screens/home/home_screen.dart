@@ -14,33 +14,40 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Добавил свой слой с оверлеем, т.к. есть переходы на другие
+    // Добавил свои слои с оверлеям, т.к. есть переходы на другие
     // экраны и оверлей перейдет и на них, ведь ближайший оверлей
     // стоит на самом верху дерева виджетов
-    return ObjectFlyAnimation(
-      destinationGlobalKey: flyingDestKey,
-      child: Overlay.wrap(
-        child: const Scaffold(
-          body: Stack(
-            children: [
-              Background(),
-              SafeArea(
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: AnimatedAppErrorsList(),
+    //
+    // Данный слой в обычном приложении избыточен, можно жить и без него,
+    // но он необходим для приложения примера, т.к. иначе у нас поплывет
+    // расчет верстки
+    return Overlay.wrap(
+      child: ObjectFlyAnimation(
+        destinationGlobalKey: flyingDestKey,
+        // Этот оверлей для отображения слоев меню
+        child: Overlay.wrap(
+          child: const Scaffold(
+            body: Stack(
+              children: [
+                Background(),
+                SafeArea(
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: AnimatedAppErrorsList(),
+                  ),
                 ),
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: BottomBar(),
-              ),
-              SafeArea(
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: BLEConnectionStatesIndicator(),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: BottomBar(),
                 ),
-              ),
-            ],
+                SafeArea(
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: BLEConnectionStatesIndicator(),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
