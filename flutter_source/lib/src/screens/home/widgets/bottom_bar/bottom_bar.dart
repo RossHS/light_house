@@ -60,11 +60,14 @@ class BottomBar extends StatelessWidget {
                             ),
                           );
                         },
-                        child: CustomHero(
-                          tag: playModeController.playMode.modeName,
-                          child: PlayModeIndicatorWidget(
-                            color: rgbController.color,
-                            playMode: playModeController.playMode,
+                        child: MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: CustomHero(
+                            tag: playModeController.playMode.modeName,
+                            child: PlayModeIndicatorWidget(
+                              color: rgbController.color,
+                              playMode: playModeController.playMode,
+                            ),
                           ),
                         ),
                       );
