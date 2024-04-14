@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:light_house/src/widgets/widgetbook_def_frame.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
@@ -9,7 +10,7 @@ Widget lightBubbleUseCase(BuildContext context) {
     initialValue: Colors.greenAccent,
   );
   final brightness = context.knobs.int.slider(label: 'brightness', initialValue: 100, min: 0, max: 255);
-  return LightBubble(color: color, brightness: brightness);
+  return WidgetbookDefFrame(child: LightBubble(color: color, brightness: brightness));
 }
 
 /// Виджет индикатора цвета, просто круглая "лампочка"

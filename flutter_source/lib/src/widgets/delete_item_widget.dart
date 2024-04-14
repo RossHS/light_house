@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:light_house/src/utils/extensions.dart';
+import 'package:light_house/src/widgets/widgetbook_def_frame.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
@@ -137,7 +138,7 @@ class _ClosePainter extends CustomPainter {
 @widgetbook.UseCase(name: 'DeleteItemWidget use case', type: DeleteItemWidget)
 Widget deleteItemWidgetWidgetUseCase(BuildContext context) {
   final color = context.knobs.colorOrNull(label: 'Close Color');
-  return Center(
+  return WidgetbookDefFrame(
     child: _DeleteItemWidgetTest(color),
   );
 }

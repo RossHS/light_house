@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:light_house/src/models/play_mode_models.dart';
 import 'package:light_house/src/utils/extensions.dart';
 import 'package:light_house/src/widgets/animated_decorated_box.dart';
+import 'package:light_house/src/widgets/widgetbook_def_frame.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
@@ -255,9 +256,7 @@ class _ChangeColorPlayModeGeneratorState extends _AbstractDecorationGeneratorSta
 @widgetbook.UseCase(name: 'PlayModeWidget use case', type: PlayModeIndicatorWidget)
 Widget playModeWidgetUseCase(BuildContext context) {
   final color = context.knobs.color(label: 'Color', initialValue: Colors.greenAccent);
-  return Center(
-    child: _PlayModeWidgetDemo(color),
-  );
+  return WidgetbookDefFrame(child: _PlayModeWidgetDemo(color));
 }
 
 class _PlayModeWidgetDemo extends StatefulWidget {

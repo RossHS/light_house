@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:light_house/src/utils/extensions.dart';
 import 'package:light_house/src/widgets/rotation_switch_widget.dart';
+import 'package:light_house/src/widgets/widgetbook_def_frame.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
@@ -129,9 +130,7 @@ class _CirclePainter extends CustomPainter {
 //------все для [Widgetbook]------//
 @widgetbook.UseCase(name: 'SelectableCircleColor use case', type: SelectableCircleColor)
 Widget selectableCircleColorUseCase(BuildContext context) {
-  return const Center(
-    child: _SelectableCircleColorTest(),
-  );
+  return const WidgetbookDefFrame(child: _SelectableCircleColorTest());
 }
 
 /// Вспомогательный виджет для [Widgetbook], тут мы просто проверяем поведение [SelectableCircleColor]

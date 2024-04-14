@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:light_house/src/widgets/widgetbook_def_frame.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
@@ -39,7 +40,7 @@ Widget rotationSwitchWidgetUseCase(BuildContext context) {
     min: 200,
     max: 5000,
   );
-  return Center(
+  return WidgetbookDefFrame(
     child: _RotationSwitchTest(
       duration: Duration(milliseconds: ms),
     ),
