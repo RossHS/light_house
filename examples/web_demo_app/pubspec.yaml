@@ -16,7 +16,7 @@ dependencies:
   light_house:
     path:
       ../../flutter_source
-  url_launcher: ^6.2.5
+  url_launcher: ^6.2.6
 
 dev_dependencies:
   flutter_test:
