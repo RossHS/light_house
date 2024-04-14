@@ -11,7 +11,6 @@ ThemeData generateThemeData({required Color seedColor, required Brightness brigh
     brightness: brightness,
     error: Colors.redAccent,
     surface: background,
-    inverseSurface: brightness == Brightness.light ? Colors.white : Colors.black,
   );
   return ThemeData(
     fontFamily: 'JetBrains Mono',

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:light_house/src/widgets/animated_decorated_box.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
@@ -162,7 +163,7 @@ mixin _AnimatedButtonStateMixin<T extends StatefulWidget> on State<T>, SingleTic
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final theme = Theme.of(context);
-    final color = _color ?? colorScheme.inverseSurface;
+    final color = _color ?? theme.canvasColor;
     return RepaintBoundary(
       child: DecoratedBox(
         decoration: BoxDecoration(
@@ -191,21 +192,16 @@ mixin _AnimatedButtonStateMixin<T extends StatefulWidget> on State<T>, SingleTic
               // Усложнил код, но уменьшил скоуп редилба
               child: ValueListenableBuilder(
                 valueListenable: _isHover,
-                // Как вариант, написать свою реализацию AnimatedDecoratedBox, но не стал
-                builder: (_, isHover, child) => TweenAnimationBuilder<Decoration>(
+                builder: (_, isHover, child) => AnimatedDecoratedBox(
                   duration: const Duration(milliseconds: 200),
                   curve: Curves.fastEaseInToSlowEaseOut,
-                  tween: DecorationTween(
-                    begin: null,
-                    end: BoxDecoration(
-                      color: color,
-                      border: Border.all(
-                        color: theme.colorScheme.onSurface,
-                        width: isHover ? 2.5 : 0.5,
-                      ),
+                  decoration: BoxDecoration(
+                    color: color,
+                    border: Border.all(
+                      color: theme.colorScheme.onSurface,
+                      width: isHover ? 2.5 : 0.5,
                     ),
                   ),
-                  builder: (_, decoration, child) => DecoratedBox(decoration: decoration, child: child),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: DefaultTextStyle(
@@ -213,11 +209,10 @@ mixin _AnimatedButtonStateMixin<T extends StatefulWidget> on State<T>, SingleTic
                       style: isHover
                           ? theme.textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w900)
                           : theme.textTheme.bodyMedium!,
-                      child: child!,
+                      child: _child,
                     ),
                   ),
                 ),
-                child: _child,
               ),
             ),
           ),
