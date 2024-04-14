@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:light_house/src/widgets/widgetbook_def_frame.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
 /// Состояния анимации
@@ -224,7 +225,7 @@ class _PositionCenteredRenderObject extends RenderProxyBox {
 //---------------------Widgetbook----------------------//
 @widgetbook.UseCase(name: 'ObjectFlyAnimation use case', type: ObjectFlyAnimation)
 Widget objectFlyAnimationUseCase(BuildContext context) {
-  return const _WidgetbookExample();
+  return const WidgetbookDefFrame(child: _WidgetbookExample());
 }
 
 class _WidgetbookExample extends StatefulWidget {

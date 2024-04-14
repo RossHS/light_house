@@ -5,6 +5,7 @@ import 'package:flutter_reactive_ble/flutter_reactive_ble.dart' hide FlutterReac
 import 'package:get_it/get_it.dart';
 import 'package:light_house/src/controllers/ble_core/ble_connection_controller.dart';
 import 'package:light_house/src/widgets/light_bubble.dart';
+import 'package:light_house/src/widgets/widgetbook_def_frame.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
 /// Виджет с индикацией соединения с BLE, так-же он способен устанавливать и разрывать соединения
@@ -66,9 +67,7 @@ class _BLEConnectionStatesIndicatorRaw extends StatelessWidget {
 //---------------------Widgetbook-----------------//
 @widgetbook.UseCase(name: 'BLEConnectionStatesIndicatorRaw use case', type: _BLEConnectionStatesIndicatorRaw)
 Widget bleConnectionStatesIndicatorRawWidgetUseCase(BuildContext context) {
-  return const Center(
-    child: _BLEConnectionStatesIndicatorRawWidgetbook(),
-  );
+  return const WidgetbookDefFrame(child: _BLEConnectionStatesIndicatorRawWidgetbook());
 }
 
 class _BLEConnectionStatesIndicatorRawWidgetbook extends StatefulWidget {

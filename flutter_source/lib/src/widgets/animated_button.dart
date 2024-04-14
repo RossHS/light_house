@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:light_house/src/widgets/animated_decorated_box.dart';
+import 'package:light_house/src/widgets/widgetbook_def_frame.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
@@ -237,7 +238,7 @@ mixin _AnimatedButtonStateMixin<T extends StatefulWidget> on State<T>, SingleTic
 @widgetbook.UseCase(name: 'AnimatedButton use case', type: AnimatedButton)
 Widget animatedButtonUseCase(BuildContext context) {
   final color = context.knobs.colorOrNull(label: 'Close Color');
-  return Center(
+  return WidgetbookDefFrame(
     child: _AnimatedButtonTest(
       buttonColor: color,
     ),

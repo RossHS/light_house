@@ -16,24 +16,28 @@ class WidgetbookApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Widgetbook.material(
       directories: directories,
-      appBuilder: (context, child) {
-        final theme = generateThemeData(seedColor: Colors.black, brightness: Brightness.light);
-        return Theme(
-          data: theme,
-          child: DefaultTextStyle(
-            style: theme.textTheme.bodyMedium!,
-            child: Center(child: child),
-          ),
-        );
-      },
+      appBuilder: (_, child) => child,
       addons: [
-        AlignmentAddon(),
-        DeviceFrameAddon(
-          devices: [
-            Devices.android.samsungGalaxyA50,
-            Devices.ios.iPhoneSE,
-            Devices.ios.iPhone13,
+        ThemeAddon(
+          themes: [
+            WidgetbookTheme(
+              name: 'Light',
+              data: generateThemeData(seedColor: Colors.white, brightness: Brightness.light),
+            ),
+            WidgetbookTheme(
+              name: 'Dark',
+              data: generateThemeData(seedColor: Colors.black, brightness: Brightness.dark),
+            ),
           ],
+          themeBuilder: (context, theme, child) {
+            return Theme(
+              data: theme,
+              child: DefaultTextStyle(
+                style: theme.textTheme.bodyMedium!,
+                child: child,
+              ),
+            );
+          },
         ),
       ],
     );

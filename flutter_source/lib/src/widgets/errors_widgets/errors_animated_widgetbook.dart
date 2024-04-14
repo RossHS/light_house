@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:light_house/src/widgets/errors_widgets/errors_widgets.dart';
+import 'package:light_house/src/widgets/widgetbook_def_frame.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
@@ -12,7 +13,7 @@ import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 @widgetbook.UseCase(name: 'ErrorsNotification use case', type: ErrorsNotification)
 Widget errorsNotificationUseCase(BuildContext context) {
   final text = context.knobs.string(label: 'text', initialValue: 'default error');
-  return _ErrorsNotificationWidgetbookTest(text);
+  return WidgetbookDefFrame(child: _ErrorsNotificationWidgetbookTest(text));
 }
 
 class _ErrorsNotificationWidgetbookTest extends StatefulWidget {
@@ -51,7 +52,9 @@ class _ErrorsNotificationWidgetbookTestState extends State<_ErrorsNotificationWi
 
 //-----------------Вывод списка ошибок----------------------------//
 @widgetbook.UseCase(name: 'ErrorsAnimatedList use case', type: ErrorsAnimatedList)
-Widget errorsAnimatedListUseCase(BuildContext context) => const _ErrorsAnimatedListWidgetbookTest();
+Widget errorsAnimatedListUseCase(BuildContext context) => const WidgetbookDefFrame(
+      child: _ErrorsAnimatedListWidgetbookTest(),
+    );
 
 class _ErrorsAnimatedListWidgetbookTest extends StatefulWidget {
   const _ErrorsAnimatedListWidgetbookTest();
