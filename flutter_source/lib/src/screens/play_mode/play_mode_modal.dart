@@ -3,10 +3,12 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:light_house/src/controllers/ble_core/ble_controllers.dart';
 import 'package:light_house/src/models/play_mode_models.dart';
+import 'package:light_house/src/screens/play_mode/widgets/static_flying_transform.dart';
 import 'package:light_house/src/widgets/animated_decorated_box.dart';
 import 'package:light_house/src/widgets/custom_hero.dart';
 import 'package:light_house/src/widgets/play_mode_indicator_widget.dart';
@@ -166,64 +168,67 @@ class _PlayModeIndicatorPreviewState extends State<_PlayModeIndicatorPreview> wi
       child: LayoutBuilder(
         builder: (context, constraints) => GestureDetector(
           onTap: () {
+            HapticFeedback.heavyImpact();
             Navigator.pop(context);
             GetIt.I<PlayModeController>().playMode = widget.playMode;
           },
-          child: Stack(
-            alignment: Alignment.topLeft,
-            clipBehavior: Clip.none,
-            children: [
-              ValueListenableBuilder<Gradient?>(
-                valueListenable: _gradient,
-                builder: (_, gradient, __) {
-                  return AnimatedBuilder(
-                    animation: _curvedAnimation,
-                    builder: (_, __) {
-                      return AnimatedDecoratedBox(
-                        duration: _gradientDuration,
-                        decoration: BoxDecoration(
-                          border: _animationController.value < 0.2
-                              ? null
-                              : Border.all(color: theme.colorScheme.onSurface, width: 2),
-                          gradient: gradient,
-                        ),
-                        child: SizedBox(
-                          width: constraints.maxWidth * _curvedAnimation.value,
-                          height: 200 * widget.heightFactor * _curvedAnimation.value,
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
-              CustomHero(
-                tag: widget.playMode.modeName,
-                child: PlayModeIndicatorWidget(
-                  color: widget.color,
-                  playMode: widget.playMode,
-                ),
-              ),
-              Positioned(
-                bottom: 10,
-                left: 0,
-                right: 0,
-                child: ValueListenableBuilder(
-                  valueListenable: _opacity,
-                  builder: (context, value, child) {
-                    return AnimatedOpacity(
-                      duration: const Duration(milliseconds: 500),
-                      opacity: value,
-                      child: child!,
+          child: StaticFlyingTransform(
+            child: Stack(
+              alignment: Alignment.topLeft,
+              clipBehavior: Clip.none,
+              children: [
+                ValueListenableBuilder<Gradient?>(
+                  valueListenable: _gradient,
+                  builder: (_, gradient, __) {
+                    return AnimatedBuilder(
+                      animation: _curvedAnimation,
+                      builder: (_, __) {
+                        return AnimatedDecoratedBox(
+                          duration: _gradientDuration,
+                          decoration: BoxDecoration(
+                            border: _animationController.value < 0.2
+                                ? null
+                                : Border.all(color: theme.colorScheme.onSurface, width: 2),
+                            gradient: gradient,
+                          ),
+                          child: SizedBox(
+                            width: constraints.maxWidth * _curvedAnimation.value,
+                            height: 200 * widget.heightFactor * _curvedAnimation.value,
+                          ),
+                        );
+                      },
                     );
                   },
-                  child: Text(
-                    widget.modeName,
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.titleMedium?.copyWith(color: Colors.white),
+                ),
+                CustomHero(
+                  tag: widget.playMode.modeName,
+                  child: PlayModeIndicatorWidget(
+                    color: widget.color,
+                    playMode: widget.playMode,
                   ),
                 ),
-              ),
-            ],
+                Positioned(
+                  bottom: 10,
+                  left: 0,
+                  right: 0,
+                  child: ValueListenableBuilder(
+                    valueListenable: _opacity,
+                    builder: (context, value, child) {
+                      return AnimatedOpacity(
+                        duration: const Duration(milliseconds: 500),
+                        opacity: value,
+                        child: child!,
+                      );
+                    },
+                    child: Text(
+                      widget.modeName,
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.titleMedium?.copyWith(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

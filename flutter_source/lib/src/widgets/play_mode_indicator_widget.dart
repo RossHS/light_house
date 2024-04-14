@@ -10,11 +10,7 @@ import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
 /// Виджет с проигрыванием режимов свечения. Это один общий виджет на все режимы проигрывания,
 /// дабы сделать плавный переход между состояниями проигрывания, логика проигрывания и стиля описывается в
-/// вспомогательном объекте.
-///
-/// П.С. Да я понимаю, что было бы чище и понятнее использовать AnimationController, AnimatedWidget и т.п.,
-/// но так как это МОЙ проект (а не гига-интерпрайз решение + я хочу проиграться и попробовать новые подходы),
-/// то почему бы и нет 🐢
+/// вспомогательном объекте [_AbstractDecorationGenerator].
 class PlayModeIndicatorWidget extends StatefulWidget {
   const PlayModeIndicatorWidget({
     super.key,
@@ -43,7 +39,7 @@ class _PlayModeIndicatorWidgetState extends State<PlayModeIndicatorWidget> {
       border: Border.all(color: theme.colorScheme.onSurface, width: 1.5),
     );
 
-    /// ТУТ switch с проигрыванием
+    // ТУТ switch с проигрыванием
     _AbstractDecorationGenerator pepega = switch (widget.playMode) {
       DisabledPlayMode() => _DisabledPlayModeGenerator(
           globalKey: _decorationIndicatorKey,
