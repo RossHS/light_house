@@ -1,6 +1,6 @@
 {
-    "name": "web_demo_app",
-    "short_name": "web_demo_app",
+    "name": "Light House DEMO",
+    "short_name": "LH DEMO",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
