@@ -41,9 +41,8 @@ LED светильник. Flutter приложение. Arduino. Шейдеры
         <img src="https://github.com/RossHS/light_house/blob/finalize/docs/assets/connection_scheme.jpg?raw=true" width="500px">
 </p>
 
-- Написано мобильное Flutter приложение (с использованием шейдеров), при помощи которого можно подключаться к устройству по BLE и управлять светильником. При разработке приложения практически всегда создавались кастомные элементы, а именно (переходы, выводы модалок, эффекты, окна и т.п.)
+- Написано мобильное Flutter приложение (с использованием шейдеров), при помощи которого можно подключаться к устройству по BLE и управлять светильником. При разработке приложения практически всегда создавались кастомные элементы, а именно: переходы, выводы модалок, эффекты, окна и т.п.
 
-Ключевые моменты
 
 | <p align="left"><a href="https://frezyx.github.io/talker" align="center"><img src="https://github.com/Frezyx/talker/blob/dev/docs/assets/v3/talker_flutter/start.png?raw=true" width="250px"></a></p> | <p align="left"><a href="https://frezyx.github.io/talker" align="center"><img src="https://github.com/Frezyx/talker/blob/dev/docs/assets/v3/talker_flutter/filter.png?raw=true" width="250px"></a></p> | <p align="left"><a href="https://frezyx.github.io/talker" align="center"><img src="https://github.com/Frezyx/talker/blob/dev/docs/assets/v3/talker_flutter/actions.png?raw=true" width="250px"></a></p> | <p align="left"><a href="https://frezyx.github.io/talker" align="center"><img src="https://github.com/Frezyx/talker/blob/dev/docs/assets/v3/talker_flutter/settings.png?raw=true" width="250px"></a></p> |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
