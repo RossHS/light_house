@@ -29,10 +29,8 @@ LED светильник. Flutter приложение. Arduino. Шейдеры
 
 Упрощенная схема подключения
 
-<p align="center">
-    <a href="https://rosshs.github.io/light_house" align="center">
-        <img src="https://github.com/RossHS/light_house/blob/finalize/docs/assets/connection_scheme.jpg?raw=true">
-    </a>
+<p align="left">
+        <img src="https://github.com/RossHS/light_house/blob/finalize/docs/assets/connection_scheme.jpg?raw=true" width="600px">
 </p>
 
 
