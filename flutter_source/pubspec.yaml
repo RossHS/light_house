@@ -2,7 +2,7 @@ name: light_house
 description: "Flutter BLE project"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.1.0+5
+version: 1.1.1+6
 
 environment:
   sdk: '>=3.3.0 <4.0.0'
@@ -25,16 +25,16 @@ dependencies:
   flutter_mobx: ^2.2.1+1
   flutter_reactive_ble: ^5.3.1
   flutter_shaders: ^0.1.2
-  get_it: ^7.6.7
-  go_router: ^13.2.2
+  get_it: ^7.6.9
+  go_router: ^13.2.4
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   logger: ^2.2.0
-  mobx: ^2.3.3+1
-  path_provider: ^2.1.2
+  mobx: ^2.3.3+2
+  path_provider: ^2.1.3
   permission_handler: ^11.3.1
-  share_plus: ^8.0.2
-  shared_preferences: ^2.2.2
+  share_plus: ^8.0.3
+  shared_preferences: ^2.2.3
   widgetbook: ^3.7.1
   widgetbook_annotation: ^3.1.0
 

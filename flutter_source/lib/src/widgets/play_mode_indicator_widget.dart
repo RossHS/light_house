@@ -41,7 +41,7 @@ class _PlayModeIndicatorWidgetState extends State<PlayModeIndicatorWidget> {
     );
 
     // ТУТ switch с проигрыванием
-    _AbstractDecorationGenerator pepega = switch (widget.playMode) {
+    _AbstractDecorationGenerator playModeGenerator = switch (widget.playMode) {
       DisabledPlayMode() => _DisabledPlayModeGenerator(
           globalKey: _decorationIndicatorKey,
           baseDecoration: baseDecoration,
@@ -69,7 +69,7 @@ class _PlayModeIndicatorWidgetState extends State<PlayModeIndicatorWidget> {
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: pepega,
+            child: playModeGenerator,
           ),
           Center(
             child: Icon(
