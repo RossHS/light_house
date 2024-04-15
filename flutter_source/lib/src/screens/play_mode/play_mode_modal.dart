@@ -166,68 +166,71 @@ class _PlayModeIndicatorPreviewState extends State<_PlayModeIndicatorPreview> wi
     // потенциально может быть [double.infinity]
     return RepaintBoundary(
       child: LayoutBuilder(
-        builder: (context, constraints) => GestureDetector(
-          onTap: () {
-            HapticFeedback.heavyImpact();
-            Navigator.pop(context);
-            GetIt.I<PlayModeController>().playMode = widget.playMode;
-          },
-          child: StaticFlyingTransform(
-            child: Stack(
-              alignment: Alignment.topLeft,
-              clipBehavior: Clip.none,
-              children: [
-                ValueListenableBuilder<Gradient?>(
-                  valueListenable: _gradient,
-                  builder: (_, gradient, __) {
-                    return AnimatedBuilder(
-                      animation: _curvedAnimation,
-                      builder: (_, __) {
-                        return AnimatedDecoratedBox(
-                          duration: _gradientDuration,
-                          decoration: BoxDecoration(
-                            border: _animationController.value < 0.2
-                                ? null
-                                : Border.all(color: theme.colorScheme.onSurface, width: 2),
-                            gradient: gradient,
-                          ),
-                          child: SizedBox(
-                            width: constraints.maxWidth * _curvedAnimation.value,
-                            height: 200 * widget.heightFactor * _curvedAnimation.value,
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
-                CustomHero(
-                  tag: widget.playMode.modeName,
-                  child: PlayModeIndicatorWidget(
-                    color: widget.color,
-                    playMode: widget.playMode,
-                  ),
-                ),
-                Positioned(
-                  bottom: 10,
-                  left: 0,
-                  right: 0,
-                  child: ValueListenableBuilder(
-                    valueListenable: _opacity,
-                    builder: (context, value, child) {
-                      return AnimatedOpacity(
-                        duration: const Duration(milliseconds: 500),
-                        opacity: value,
-                        child: child!,
+        builder: (context, constraints) => StaticFlyingTransform(
+          child: GestureDetector(
+            onTap: () {
+              HapticFeedback.heavyImpact();
+              Navigator.pop(context);
+              GetIt.I<PlayModeController>().playMode = widget.playMode;
+            },
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: Stack(
+                alignment: Alignment.topLeft,
+                clipBehavior: Clip.none,
+                children: [
+                  ValueListenableBuilder<Gradient?>(
+                    valueListenable: _gradient,
+                    builder: (_, gradient, __) {
+                      return AnimatedBuilder(
+                        animation: _curvedAnimation,
+                        builder: (_, __) {
+                          return AnimatedDecoratedBox(
+                            duration: _gradientDuration,
+                            decoration: BoxDecoration(
+                              border: _animationController.value < 0.2
+                                  ? null
+                                  : Border.all(color: theme.colorScheme.onSurface, width: 2),
+                              gradient: gradient,
+                            ),
+                            child: SizedBox(
+                              width: constraints.maxWidth * _curvedAnimation.value,
+                              height: 200 * widget.heightFactor * _curvedAnimation.value,
+                            ),
+                          );
+                        },
                       );
                     },
-                    child: Text(
-                      widget.modeName,
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.titleMedium?.copyWith(color: Colors.white),
+                  ),
+                  CustomHero(
+                    tag: widget.playMode.modeName,
+                    child: PlayModeIndicatorWidget(
+                      color: widget.color,
+                      playMode: widget.playMode,
                     ),
                   ),
-                ),
-              ],
+                  Positioned(
+                    bottom: 10,
+                    left: 0,
+                    right: 0,
+                    child: ValueListenableBuilder(
+                      valueListenable: _opacity,
+                      builder: (context, value, child) {
+                        return AnimatedOpacity(
+                          duration: const Duration(milliseconds: 500),
+                          opacity: value,
+                          child: child!,
+                        );
+                      },
+                      child: Text(
+                        widget.modeName,
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.titleMedium?.copyWith(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
